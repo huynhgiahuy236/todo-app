@@ -11,17 +11,23 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.background,
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
-        onPrimary: AppColors.onPrimary,
+        onPrimary: Colors.white,
         primaryContainer: AppColors.primaryContainer,
-        onPrimaryContainer: AppColors.onPrimaryContainer,
+        onPrimaryContainer: Colors.white,
         secondary: AppColors.secondary,
-        onSecondary: AppColors.onSecondary,
+        onSecondary: Colors.white,
         surface: AppColors.surfaceCard,
         onSurface: AppColors.onSurface,
+        onSurfaceVariant: AppColors.onSurfaceVariant,
+        outline: AppColors.outline,
+        outlineVariant: AppColors.outlineVariant,
         error: AppColors.error,
-        onError: AppColors.onError,
+        onError: Colors.white,
       ),
-      textTheme: GoogleFonts.interTextTheme().copyWith(
+      textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme).apply(
+        bodyColor: AppColors.onSurface,
+        displayColor: AppColors.onSurface,
+      ).copyWith(
         headlineLarge: GoogleFonts.inter(
           fontSize: 28,
           fontWeight: FontWeight.w700,
@@ -46,13 +52,13 @@ class AppTheme {
         ),
         bodyLarge: GoogleFonts.inter(
           fontSize: 16,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w500,
           color: AppColors.onSurface,
         ),
         bodyMedium: GoogleFonts.inter(
           fontSize: 14,
           fontWeight: FontWeight.w400,
-          color: AppColors.onSurfaceVariant,
+          color: AppColors.onSurface,
         ),
         bodySmall: GoogleFonts.inter(
           fontSize: 12,
@@ -75,12 +81,25 @@ class AppTheme {
           color: AppColors.outline,
         ),
       ),
+      listTileTheme: const ListTileThemeData(
+        textColor: AppColors.onSurface,
+        iconColor: AppColors.onSurfaceVariant,
+        titleTextStyle: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.onSurface,
+        ),
+        subtitleTextStyle: TextStyle(
+          fontSize: 12,
+          color: AppColors.onSurfaceVariant,
+        ),
+      ),
       cardTheme: CardThemeData(
         color: AppColors.surfaceCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.divider, width: 0.5),
+          side: const BorderSide(color: AppColors.divider, width: 0.8),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -108,15 +127,16 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.onPrimary,
+          foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           textStyle: GoogleFonts.inter(
             fontSize: 15,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
           ),
         ),
       ),
@@ -140,10 +160,19 @@ class AppTheme {
           fontSize: 14,
           color: AppColors.outline,
         ),
+        labelStyle: GoogleFonts.inter(
+          fontSize: 14,
+          color: AppColors.onSurface,
+        ),
+        prefixIconColor: AppColors.outline,
+        suffixIconColor: AppColors.outline,
+      ),
+      dropdownMenuTheme: const DropdownMenuThemeData(
+        textStyle: TextStyle(color: AppColors.onSurface, fontSize: 14, fontWeight: FontWeight.w600),
       ),
       dividerTheme: const DividerThemeData(
         color: AppColors.divider,
-        thickness: 0.5,
+        thickness: 0.8,
         space: 1,
       ),
     );
@@ -167,7 +196,14 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: Color(0xFF1E334D), width: 0.5),
+          side: const BorderSide(color: Color(0xFF1E334D), width: 0.8),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
     );

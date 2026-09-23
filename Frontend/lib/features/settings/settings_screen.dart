@@ -54,7 +54,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Cài đặt'),
+        title: const Text('Cài đặt', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -67,7 +67,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               decoration: BoxDecoration(
                 color: AppColors.surfaceCard,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.divider),
+                boxShadow: AppColors.cardShadow,
+                border: Border.all(color: AppColors.divider.withOpacity(0.6)),
               ),
               child: Column(
                 children: [
@@ -79,7 +80,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         color: AppColors.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.brightness_6, color: AppColors.primary, size: 18),
+                      child: const Icon(Icons.brightness_6_rounded, color: AppColors.primary, size: 18),
                     ),
                     title: const Text('Chế độ giao diện', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                   ),
@@ -87,11 +88,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     padding: const EdgeInsets.only(left: 16, right: 16, bottom: 14),
                     child: Row(
                       children: [
-                        _buildThemePill('Hệ thống', ThemeMode.system, currentTheme, Icons.settings_suggest),
+                        _buildThemePill('Hệ thống', ThemeMode.system, currentTheme, Icons.settings_suggest_rounded),
                         const SizedBox(width: 8),
-                        _buildThemePill('Sáng', ThemeMode.light, currentTheme, Icons.light_mode),
+                        _buildThemePill('Sáng', ThemeMode.light, currentTheme, Icons.light_mode_rounded),
                         const SizedBox(width: 8),
-                        _buildThemePill('Tối', ThemeMode.dark, currentTheme, Icons.dark_mode),
+                        _buildThemePill('Tối', ThemeMode.dark, currentTheme, Icons.dark_mode_rounded),
                       ],
                     ),
                   ),
@@ -106,7 +107,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               decoration: BoxDecoration(
                 color: AppColors.surfaceCard,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.divider),
+                boxShadow: AppColors.cardShadow,
+                border: Border.all(color: AppColors.divider.withOpacity(0.6)),
               ),
               child: Column(
                 children: [
@@ -118,7 +120,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         color: AppColors.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.calendar_month, color: AppColors.primary, size: 18),
+                      child: const Icon(Icons.calendar_month_rounded, color: AppColors.primary, size: 18),
                     ),
                     title: const Text('Bắt đầu tuần từ', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                     trailing: const Text('Thứ Hai', style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant)),
@@ -132,7 +134,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         color: AppColors.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.view_week, color: AppColors.primary, size: 18),
+                      child: const Icon(Icons.view_week_rounded, color: AppColors.primary, size: 18),
                     ),
                     title: const Text('Chế độ xem mặc định', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                     trailing: const Text('Ngày', style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant)),
@@ -148,7 +150,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               decoration: BoxDecoration(
                 color: AppColors.surfaceCard,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.divider),
+                boxShadow: AppColors.cardShadow,
+                border: Border.all(color: AppColors.divider.withOpacity(0.6)),
               ),
               child: Column(
                 children: [
@@ -176,7 +179,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         color: AppColors.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.schedule, color: AppColors.primary, size: 18),
+                      child: const Icon(Icons.schedule_rounded, color: AppColors.primary, size: 18),
                     ),
                     title: const Text('Nhắc trước sự kiện', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                     trailing: const Text('15 phút', style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant)),
@@ -186,14 +189,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Group 4: MÁY CHỦ API (Cấu hình linh hoạt)
+            // Group 4: MÁY CHỦ API
             _buildSectionHeader('KẾT NỐI MÁY CHỦ (SERVER URL)'),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: AppColors.surfaceCard,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.divider),
+                boxShadow: AppColors.cardShadow,
+                border: Border.all(color: AppColors.divider.withOpacity(0.6)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,7 +212,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     decoration: InputDecoration(
                       hintText: 'http://localhost:5000/api',
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.save, color: AppColors.primary),
+                        icon: const Icon(Icons.save_rounded, color: AppColors.primary),
                         onPressed: _saveServerUrl,
                       ),
                     ),
@@ -224,14 +228,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               decoration: BoxDecoration(
                 color: AppColors.surfaceCard,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.divider),
+                boxShadow: AppColors.cardShadow,
+                border: Border.all(color: AppColors.divider.withOpacity(0.6)),
               ),
               child: Column(
                 children: [
                   ListTile(
-                    leading: const CircleAvatar(
+                    leading: CircleAvatar(
                       backgroundColor: AppColors.primaryFixed,
-                      child: Icon(Icons.person, color: AppColors.primary),
+                      child: Text(
+                        authState.user?.name.substring(0, 1).toUpperCase() ?? 'U',
+                        style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.primary),
+                      ),
                     ),
                     title: Text(
                       authState.user?.name ?? 'Tài khoản',
@@ -244,7 +252,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   const Divider(height: 1),
                   ListTile(
-                    leading: const Icon(Icons.logout, color: AppColors.error),
+                    leading: const Icon(Icons.logout_rounded, color: AppColors.error),
                     title: const Text(
                       'Đăng xuất',
                       style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600, fontSize: 14),
@@ -287,11 +295,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       child: InkWell(
         onTap: () => ref.read(themeProvider.notifier).setTheme(mode),
         borderRadius: BorderRadius.circular(10),
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: isSelected ? AppColors.primary : AppColors.surfaceContainerLow,
             borderRadius: BorderRadius.circular(10),
+            boxShadow: isSelected ? [BoxShadow(color: AppColors.primary.withOpacity(0.2), blurRadius: 4)] : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -302,7 +312,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 title,
                 style: TextStyle(
                   fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                   color: isSelected ? Colors.white : AppColors.onSurfaceVariant,
                 ),
               ),

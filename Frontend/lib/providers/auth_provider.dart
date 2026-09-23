@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_model.dart';
 import '../core/storage/secure_storage_service.dart';
@@ -55,8 +56,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         await SecureStorageService.clearAuth();
         state = state.copyWith(status: AuthStatus.unauthenticated);
       }
-    } catch (e) {
-      // In case of network error, check if local user data exists
+    } catch (_) {
       final localUser = await SecureStorageService.getUserData();
       if (localUser['id'] != null) {
         state = state.copyWith(
@@ -97,11 +97,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
         );
         return false;
       }
-    } catch (e: any) {
+    } on DioException catch (e) {
       final msg = e.response?.data?['message'] ?? 'Không thể kết nối đến máy chủ';
       state = state.copyWith(
         status: AuthStatus.unauthenticated,
         errorMessage: msg,
+      );
+      return false;
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        errorMessage: e.toString(),
       );
       return false;
     }
@@ -132,11 +138,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
         );
         return false;
       }
-    } catch (e: any) {
+    } on DioException catch (e) {
       final msg = e.response?.data?['message'] ?? 'Không thể kết nối đến máy chủ';
       state = state.copyWith(
         status: AuthStatus.unauthenticated,
         errorMessage: msg,
+      );
+      return false;
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        errorMessage: e.toString(),
       );
       return false;
     }

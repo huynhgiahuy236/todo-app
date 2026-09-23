@@ -65,13 +65,21 @@ class ScheduleDetailDialog extends ConsumerWidget {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('Xác nhận xóa'),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Xác nhận xóa', style: TextStyle(fontWeight: FontWeight.w700)),
           content: Text('Bạn có chắc muốn xóa lịch "${schedule.title}"?'),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Hủy')),
             TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Hủy', style: TextStyle(color: AppColors.onSurfaceVariant)),
+            ),
+            ElevatedButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Xóa', style: TextStyle(color: AppColors.error)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              child: const Text('Xóa', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
             ),
           ],
         ),
@@ -95,9 +103,9 @@ class ScheduleDetailDialog extends ConsumerWidget {
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.surfaceCard,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -106,7 +114,7 @@ class ScheduleDetailDialog extends ConsumerWidget {
             // Drag Handle
             Center(
               child: Container(
-                width: 36,
+                width: 40,
                 height: 4,
                 decoration: BoxDecoration(
                   color: AppColors.outlineVariant,
@@ -114,14 +122,14 @@ class ScheduleDetailDialog extends ConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
 
             // Top Category Pill & Action Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
                     color: accentColor.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(20),
@@ -138,22 +146,39 @@ class ScheduleDetailDialog extends ConsumerWidget {
                 ),
                 Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit_outlined, color: AppColors.primary),
-                      onPressed: () {
+                    InkWell(
+                      onTap: () {
                         Navigator.pop(context);
                         AddScheduleSheet.show(context, initialSchedule: schedule);
                       },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceContainerLow,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(Icons.edit_outlined, color: AppColors.primary, size: 20),
+                      ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.delete_outline, color: AppColors.error),
-                      onPressed: () => _handleDelete(context, ref),
+                    const SizedBox(width: 8),
+                    InkWell(
+                      onTap: () => _handleDelete(context, ref),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.errorContainer.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(Icons.delete_outline_rounded, color: AppColors.error, size: 20),
+                      ),
                     ),
                   ],
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
 
             // Title
             Text(
@@ -162,49 +187,51 @@ class ScheduleDetailDialog extends ConsumerWidget {
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: AppColors.onSurface,
+                letterSpacing: -0.4,
               ),
             ),
             const SizedBox(height: 16),
 
             // Time and Date Card
             Container(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: AppColors.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.divider.withOpacity(0.6)),
               ),
               child: Column(
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.calendar_today, size: 18, color: AppColors.primary),
+                      const Icon(Icons.calendar_today_rounded, size: 18, color: AppColors.primary),
                       const SizedBox(width: 10),
                       Text(
                         DateFormatter.formatDisplayDateVi(DateFormatter.parseIsoDate(schedule.startDate)),
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.onSurface),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.onSurface),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Icon(Icons.schedule, size: 18, color: AppColors.secondary),
+                      const Icon(Icons.schedule_rounded, size: 18, color: AppColors.secondary),
                       const SizedBox(width: 10),
                       Text(
                         '${schedule.startTime} - ${schedule.endTime}',
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.onSurface),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.onSurface),
                       ),
                     ],
                   ),
                   if (schedule.isRecurring) ...[
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
-                        const Icon(Icons.repeat, size: 18, color: AppColors.tertiary),
+                        const Icon(Icons.repeat_rounded, size: 18, color: AppColors.tertiary),
                         const SizedBox(width: 10),
                         Text(
                           schedule.recurrence?.displayLabel ?? 'Lặp lại',
-                          style: const TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.onSurfaceVariant),
                         ),
                       ],
                     ),
@@ -216,40 +243,56 @@ class ScheduleDetailDialog extends ConsumerWidget {
 
             // Location if present
             if (schedule.location != null && schedule.location!.isNotEmpty) ...[
-              Row(
-                children: [
-                  const Icon(Icons.location_on_outlined, color: AppColors.outline, size: 18),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      schedule.location!,
-                      style: const TextStyle(fontSize: 14, color: AppColors.onSurface),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceCard,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.location_on_outlined, color: AppColors.primary, size: 18),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        schedule.location!,
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.onSurface),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
             ],
 
             // Note if present
             if (schedule.note != null && schedule.note!.isNotEmpty) ...[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.notes_outlined, color: AppColors.outline, size: 18),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      schedule.note!,
-                      style: const TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceCard,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.notes_rounded, color: AppColors.outline, size: 18),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        schedule.note!,
+                        style: const TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant, height: 1.4),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
             ],
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
           ],
         ),
       ),

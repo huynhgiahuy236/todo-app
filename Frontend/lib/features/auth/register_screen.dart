@@ -60,7 +60,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Tạo tài khoản'),
+        title: const Text(
+          'Tạo tài khoản',
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
       ),
       body: SafeArea(
         child: Center(
@@ -91,43 +94,63 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     color: AppColors.surfaceCard,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: AppColors.divider),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Họ và tên', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      const Text(
+                        'Họ và tên',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                      ),
                       const SizedBox(height: 6),
                       TextField(
                         controller: _nameController,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
                         decoration: const InputDecoration(
                           hintText: 'Nguyễn Văn A',
-                          prefixIcon: Icon(Icons.person_outline, size: 20),
+                          prefixIcon: Icon(Icons.person_outline, size: 20, color: AppColors.outline),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text('Email', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      const Text(
+                        'Email',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                      ),
                       const SizedBox(height: 6),
                       TextField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
                         decoration: const InputDecoration(
                           hintText: 'name@example.com',
-                          prefixIcon: Icon(Icons.email_outlined, size: 20),
+                          prefixIcon: Icon(Icons.email_outlined, size: 20, color: AppColors.outline),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text('Mật khẩu', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      const Text(
+                        'Mật khẩu',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                      ),
                       const SizedBox(height: 6),
                       TextField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
                         decoration: InputDecoration(
                           hintText: 'Tối thiểu 6 ký tự',
-                          prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                          prefixIcon: const Icon(Icons.lock_outline, size: 20, color: AppColors.outline),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword ? Icons.visibility_off : Icons.visibility,
                               size: 20,
+                              color: AppColors.outline,
                             ),
                             onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                           ),
@@ -137,7 +160,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ElevatedButton(
                         onPressed: authState.status == AuthStatus.loading ? null : _handleRegister,
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
                           minimumSize: const Size.fromHeight(48),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         child: authState.status == AuthStatus.loading
                             ? const SizedBox(
@@ -145,7 +171,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 height: 22,
                                 child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                               )
-                            : const Text('Đăng ký'),
+                            : const Text(
+                                'Đăng ký',
+                                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
+                              ),
                       ),
                     ],
                   ),

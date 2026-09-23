@@ -106,33 +106,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     color: AppColors.surfaceCard,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: AppColors.divider),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Email', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      const Text(
+                        'Email',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                      ),
                       const SizedBox(height: 6),
                       TextField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
                         decoration: const InputDecoration(
                           hintText: 'name@example.com',
-                          prefixIcon: Icon(Icons.email_outlined, size: 20),
+                          prefixIcon: Icon(Icons.email_outlined, size: 20, color: AppColors.outline),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text('Mật khẩu', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      const Text(
+                        'Mật khẩu',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                      ),
                       const SizedBox(height: 6),
                       TextField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
                         decoration: InputDecoration(
                           hintText: 'Nhập mật khẩu',
-                          prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                          prefixIcon: const Icon(Icons.lock_outline, size: 20, color: AppColors.outline),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword ? Icons.visibility_off : Icons.visibility,
                               size: 20,
+                              color: AppColors.outline,
                             ),
                             onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                           ),
@@ -142,7 +158,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ElevatedButton(
                         onPressed: authState.status == AuthStatus.loading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
                           minimumSize: const Size.fromHeight(48),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         child: authState.status == AuthStatus.loading
                             ? const SizedBox(
@@ -150,7 +169,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 height: 22,
                                 child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                               )
-                            : const Text('Đăng nhập'),
+                            : const Text(
+                                'Đăng nhập',
+                                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
+                              ),
                       ),
                     ],
                   ),

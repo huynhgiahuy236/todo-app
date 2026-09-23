@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/note_model.dart';
 import '../core/network/api_client.dart';
@@ -71,10 +72,15 @@ class NoteNotifier extends StateNotifier<NoteState> {
           errorMessage: res.data['message'] ?? 'Lỗi khi tải ghi chú',
         );
       }
-    } catch (e: any) {
+    } on DioException catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.response?.data?['message'] ?? 'Không thể tải ghi chú',
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString(),
       );
     }
   }
@@ -97,7 +103,7 @@ class NoteNotifier extends StateNotifier<NoteState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
@@ -110,7 +116,7 @@ class NoteNotifier extends StateNotifier<NoteState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
@@ -125,7 +131,7 @@ class NoteNotifier extends StateNotifier<NoteState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }

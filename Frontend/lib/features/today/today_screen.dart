@@ -35,6 +35,11 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     ref.read(taskProvider.notifier).fetchTasks();
   }
 
+  String _getUserInitial(String? name) {
+    if (name == null || name.trim().isEmpty) return 'M';
+    return name.trim().substring(0, 1).toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
@@ -47,7 +52,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     final weekDays = DateFormatter.getWeekDays(selectedDate);
 
     final todaySchedules = scheduleState.schedules.where((s) => s.startDate == selectedIso).toList();
-    final todayTasks = taskState.tasks.take(3).toList();
+    final todayTasks = taskState.tasks.take(4).toList();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -61,42 +66,92 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Top Header: Greeting & Action Icons
+                // 1. Top Header Area (Greeting, Date & Profile)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Xin chào, ${authState.user?.name ?? 'bạn'} 👋',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          'Chào buổi sáng 👋',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.onSurfaceVariant.withOpacity(0.85),
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           DateFormatter.formatDisplayDateVi(selectedDate),
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.w700,
                             color: AppColors.onSurface,
-                            letterSpacing: -0.3,
+                            letterSpacing: -0.4,
                           ),
                         ),
                       ],
                     ),
                     Row(
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.settings_outlined, color: AppColors.onSurface),
-                          onPressed: () => context.push('/settings'),
+                        // Notification button
+                        InkWell(
+                          onTap: () => context.push('/settings'),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceCard,
+                              shape: BoxShape.circle,
+                              boxShadow: AppColors.cardShadow,
+                            ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                const Icon(Icons.notifications_outlined, size: 22, color: AppColors.onSurface),
+                                Positioned(
+                                  top: 9,
+                                  right: 9,
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.error,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: AppColors.surfaceCard, width: 1.5),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        // Avatar
+                        InkWell(
+                          onTap: () => context.push('/settings'),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                              boxShadow: AppColors.cardShadow,
+                            ),
+                            child: Center(
+                              child: Text(
+                                _getUserInitial(authState.user?.name),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -104,13 +159,14 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // 7-Day Horizontal Week Strip
+                // 2. Compact Weekly Calendar Strip
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceCard,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.divider),
+                    boxShadow: AppColors.cardShadow,
+                    border: Border.all(color: AppColors.divider.withOpacity(0.6)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -120,69 +176,73 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                       final dayIso = DateFormatter.formatIsoDate(day);
                       final hasEvent = scheduleState.schedules.any((s) => s.startDate == dayIso);
 
-                      return InkWell(
-                        onTap: () => ref.read(calendarProvider.notifier).selectDate(day),
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: isSelected ? AppColors.primary : Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
-                            border: (!isSelected && isToday)
-                                ? Border.all(color: AppColors.primary, width: 1.2)
-                                : null,
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                DateFormatter.formatWeekdayHeader(day),
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: isSelected
-                                      ? Colors.white.withOpacity(0.8)
-                                      : (day.weekday == DateTime.sunday ? AppColors.error : AppColors.outline),
+                      return Expanded(
+                        child: InkWell(
+                          onTap: () => ref.read(calendarProvider.notifier).selectDate(day),
+                          borderRadius: BorderRadius.circular(12),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isSelected ? AppColors.primary : Colors.transparent,
+                              borderRadius: BorderRadius.circular(12),
+                              border: (!isSelected && isToday)
+                                  ? Border.all(color: AppColors.primary.withOpacity(0.6), width: 1.2)
+                                  : null,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  DateFormatter.formatWeekdayHeader(day),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                    color: isSelected
+                                        ? Colors.white.withOpacity(0.85)
+                                        : (day.weekday == DateTime.sunday ? AppColors.error : AppColors.outline),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${day.day}',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                                  color: isSelected
-                                      ? Colors.white
-                                      : (day.weekday == DateTime.sunday ? AppColors.error : AppColors.onSurface),
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${day.day}',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : (day.weekday == DateTime.sunday ? AppColors.error : AppColors.onSurface),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Container(
-                                width: 4,
-                                height: 4,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: hasEvent
-                                      ? (isSelected ? Colors.white : AppColors.primary)
-                                      : Colors.transparent,
+                                const SizedBox(height: 4),
+                                Container(
+                                  width: 4,
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: hasEvent
+                                        ? (isSelected ? Colors.white : AppColors.primary)
+                                        : Colors.transparent,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       );
                     }).toList(),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 22),
 
-                // Section 1: Today Schedule Header
+                // 3. Section 1: Thời khóa biểu hôm nay
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'LỊCH TRÌNH TRONG NGÀY',
+                      'THỜI KHÓA BIỂU HÔM NAY',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.w700,
                         color: AppColors.outline,
                         letterSpacing: 0.8,
@@ -215,14 +275,15 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                     decoration: BoxDecoration(
                       color: AppColors.surfaceCard,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.divider),
+                      boxShadow: AppColors.cardShadow,
+                      border: Border.all(color: AppColors.divider.withOpacity(0.6)),
                     ),
                     child: Column(
                       children: [
                         Container(
                           width: 48,
                           height: 48,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: AppColors.surfaceContainerLow,
                             shape: BoxShape.circle,
                           ),
@@ -259,16 +320,16 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                     );
                   }),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 22),
 
-                // Section 2: Tasks Preview
+                // 4. Section 2: Việc cần làm (Grouped Card List)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       'VIỆC CẦN LÀM',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.w700,
                         color: AppColors.outline,
                         letterSpacing: 0.8,
@@ -277,7 +338,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                     InkWell(
                       onTap: () => context.go('/tasks'),
                       child: const Text(
-                        'Xem tất cả →',
+                        'Xem tất cả',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -292,11 +353,12 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                 if (todayTasks.isEmpty)
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
                       color: AppColors.surfaceCard,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.divider),
+                      boxShadow: AppColors.cardShadow,
+                      border: Border.all(color: AppColors.divider.withOpacity(0.6)),
                     ),
                     child: const Center(
                       child: Text(
@@ -306,52 +368,68 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                     ),
                   )
                 else
-                  ...todayTasks.map((task) {
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceCard,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.divider),
-                      ),
-                      child: Row(
-                        children: [
-                          InkWell(
-                            onTap: () => ref.read(taskProvider.notifier).toggleTask(task.id),
-                            child: Container(
-                              width: 22,
-                              height: 22,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: task.completed ? AppColors.primary : Colors.transparent,
-                                border: Border.all(
-                                  color: task.completed ? AppColors.primary : AppColors.outline,
-                                  width: 1.8,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceCard,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: AppColors.cardShadow,
+                      border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Column(
+                        children: todayTasks.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final task = entry.value;
+                          final isLast = index == todayTasks.length - 1;
+
+                          return Column(
+                            children: [
+                              InkWell(
+                                onTap: () => ref.read(taskProvider.notifier).toggleTask(task.id),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 22,
+                                        height: 22,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: task.completed ? AppColors.primary : Colors.transparent,
+                                          border: Border.all(
+                                            color: task.completed ? AppColors.primary : AppColors.outlineVariant,
+                                            width: 1.8,
+                                          ),
+                                        ),
+                                        child: task.completed
+                                            ? const Icon(Icons.check, size: 14, color: Colors.white)
+                                            : null,
+                                      ),
+                                      const SizedBox(width: 14),
+                                      Expanded(
+                                        child: Text(
+                                          task.title,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            decoration: task.completed ? TextDecoration.lineThrough : null,
+                                            color: task.completed ? AppColors.outline : AppColors.onSurface,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              child: task.completed
-                                  ? const Icon(Icons.check, size: 14, color: Colors.white)
-                                  : null,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              task.title,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                decoration: task.completed ? TextDecoration.lineThrough : null,
-                                color: task.completed ? AppColors.outline : AppColors.onSurface,
-                              ),
-                            ),
-                          ),
-                        ],
+                              if (!isLast) const Divider(height: 1, color: AppColors.divider),
+                            ],
+                          );
+                        }).toList(),
                       ),
-                    );
-                  }),
-                const SizedBox(height: 20),
+                    ),
+                  ),
+                const SizedBox(height: 24),
               ],
             ),
           ),

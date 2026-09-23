@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/schedule_model.dart';
 import '../core/network/api_client.dart';
@@ -68,10 +69,15 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           errorMessage: res.data['message'] ?? 'Lỗi khi tải lịch',
         );
       }
-    } catch (e: any) {
+    } on DioException catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.response?.data?['message'] ?? 'Không thể tải lịch trình',
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString(),
       );
     }
   }
@@ -84,7 +90,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
@@ -97,12 +103,11 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
 
-  // 1. Chỉ lịch này (Only this event)
   Future<bool> updateOccurrence(
     String id,
     String targetDate,
@@ -120,12 +125,11 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
 
-  // 2. Lịch này và các lịch sau (This and future)
   Future<bool> updateFuture(
     String id,
     String targetDate,
@@ -143,12 +147,11 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
 
-  // 3. Toàn bộ chuỗi (Entire series)
   Future<bool> updateSeries(
     String id,
     Map<String, dynamic> updateData,
@@ -165,7 +168,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
@@ -190,7 +193,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
@@ -200,7 +203,6 @@ final scheduleProvider = StateNotifierProvider<ScheduleNotifier, ScheduleState>(
   return ScheduleNotifier();
 });
 
-// Helper provider: get schedules for a specific date
 final schedulesForDateProvider = Provider.family<List<ScheduleModel>, String>((ref, isoDate) {
   final all = ref.watch(scheduleProvider).schedules;
   return all.where((s) => s.startDate == isoDate).toList();

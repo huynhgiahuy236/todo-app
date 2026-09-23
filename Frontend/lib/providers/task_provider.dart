@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/task_model.dart';
 import '../core/network/api_client.dart';
@@ -56,10 +57,15 @@ class TaskNotifier extends StateNotifier<TaskState> {
           errorMessage: res.data['message'] ?? 'Lỗi khi tải công việc',
         );
       }
-    } catch (e: any) {
+    } on DioException catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.response?.data?['message'] ?? 'Không thể tải công việc',
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString(),
       );
     }
   }
@@ -72,13 +78,12 @@ class TaskNotifier extends StateNotifier<TaskState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
 
   Future<bool> toggleTask(String id) async {
-    // Optimistic update
     final originalTasks = state.tasks;
     state = state.copyWith(
       tasks: state.tasks.map((t) => t.id == id ? t.copyWith(completed: !t.completed) : t).toList(),
@@ -92,7 +97,7 @@ class TaskNotifier extends StateNotifier<TaskState> {
         state = state.copyWith(tasks: originalTasks);
         return false;
       }
-    } catch (e) {
+    } catch (_) {
       state = state.copyWith(tasks: originalTasks);
       return false;
     }
@@ -108,7 +113,7 @@ class TaskNotifier extends StateNotifier<TaskState> {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }

@@ -127,47 +127,60 @@ class ScaffoldWithBottomNav extends StatelessWidget {
         onPressed: () => _openQuickAdd(context),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
-        elevation: 4,
+        elevation: 3,
         shape: const CircleBorder(),
-        child: const Icon(Icons.add, size: 28),
+        child: const Icon(Icons.add, size: 26),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8,
-        color: AppColors.surfaceCard,
-        elevation: 8,
-        padding: EdgeInsets.zero,
-        height: 64,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildNavItem(
-              index: 0,
-              icon: Icons.home_outlined,
-              activeIcon: Icons.home,
-              label: 'Hôm nay',
-            ),
-            _buildNavItem(
-              index: 1,
-              icon: Icons.calendar_month_outlined,
-              activeIcon: Icons.calendar_month,
-              label: 'Lịch',
-            ),
-            const SizedBox(width: 48), // Space for FAB
-            _buildNavItem(
-              index: 2,
-              icon: Icons.task_alt_outlined,
-              activeIcon: Icons.task_alt,
-              label: 'Việc',
-            ),
-            _buildNavItem(
-              index: 3,
-              icon: Icons.note_alt_outlined,
-              activeIcon: Icons.note_alt,
-              label: 'Ghi chú',
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: AppColors.surfaceCard,
+          border: const Border(
+            top: BorderSide(color: AppColors.divider, width: 0.8),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0B1C30).withOpacity(0.04),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
             ),
           ],
+        ),
+        child: SafeArea(
+          top: false,
+          child: SizedBox(
+            height: 62,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(
+                  index: 0,
+                  icon: Icons.home_outlined,
+                  activeIcon: Icons.home_rounded,
+                  label: 'Hôm nay',
+                ),
+                _buildNavItem(
+                  index: 1,
+                  icon: Icons.calendar_month_outlined,
+                  activeIcon: Icons.calendar_month_rounded,
+                  label: 'Lịch',
+                ),
+                const SizedBox(width: 48), // Space for centered FAB
+                _buildNavItem(
+                  index: 2,
+                  icon: Icons.check_circle_outline_rounded,
+                  activeIcon: Icons.check_circle_rounded,
+                  label: 'Việc',
+                ),
+                _buildNavItem(
+                  index: 3,
+                  icon: Icons.edit_note_outlined,
+                  activeIcon: Icons.edit_note_rounded,
+                  label: 'Ghi chú',
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -180,17 +193,26 @@ class ScaffoldWithBottomNav extends StatelessWidget {
     required String label,
   }) {
     final isSelected = navigationShell.currentIndex == index;
-    return InkWell(
-      onTap: () => _onTap(index),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+    return Expanded(
+      child: InkWell(
+        onTap: () => _onTap(index),
+        splashColor: AppColors.primary.withOpacity(0.08),
+        highlightColor: Colors.transparent,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              isSelected ? activeIcon : icon,
-              color: isSelected ? AppColors.primary : AppColors.outline,
-              size: 22,
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.primary.withOpacity(0.12) : Colors.transparent,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(
+                isSelected ? activeIcon : icon,
+                color: isSelected ? AppColors.primary : AppColors.outline,
+                size: 22,
+              ),
             ),
             const SizedBox(height: 2),
             Text(

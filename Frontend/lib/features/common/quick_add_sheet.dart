@@ -37,72 +37,87 @@ class QuickAddSheet extends StatelessWidget {
         color: AppColors.surfaceCard,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Drag Handle
-            Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.outlineVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
+
             // Header
             Row(
-              children: const [
-                Text(
-                  'Thêm mới',
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Tạo mới nhanh',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: AppColors.onSurface,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  borderRadius: BorderRadius.circular(16),
+                  child: const Padding(
+                    padding: EdgeInsets.all(4),
+                    child: Icon(Icons.close_rounded, color: AppColors.onSurfaceVariant, size: 22),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
+
             // Options
             _buildOption(
-              icon: Icons.calendar_month,
+              icon: Icons.calendar_month_rounded,
               iconColor: AppColors.primary,
               iconBgColor: AppColors.primaryFixed,
-              title: 'Lịch trình',
-              subtitle: 'Thêm buổi học, ca làm, cuộc họp hay sự kiện',
+              title: 'Lịch trình / Buổi học',
+              subtitle: 'Thêm buổi học, ca làm việc, cuộc họp hay sự kiện',
               onTap: () {
                 Navigator.pop(context);
                 onAddSchedule();
               },
             ),
-            const Divider(height: 16, color: AppColors.divider),
+            const SizedBox(height: 8),
             _buildOption(
-              icon: Icons.task_alt,
+              icon: Icons.task_alt_rounded,
               iconColor: AppColors.warning,
               iconBgColor: AppColors.warning.withOpacity(0.15),
-              title: 'Việc cần làm',
-              subtitle: 'Thêm đầu việc, bài tập và deadline',
+              title: 'Việc cần làm / Deadline',
+              subtitle: 'Thêm đầu việc, bài tập và hạn hoàn thành',
               onTap: () {
                 Navigator.pop(context);
                 onAddTask();
               },
             ),
-            const Divider(height: 16, color: AppColors.divider),
+            const SizedBox(height: 8),
             _buildOption(
-              icon: Icons.note_alt_outlined,
+              icon: Icons.edit_note_rounded,
               iconColor: AppColors.catPersonal,
               iconBgColor: AppColors.catPersonal.withOpacity(0.15),
-              title: 'Ghi chú',
-              subtitle: 'Lưu ý tưởng, nội dung cần nhớ gắn với lịch/việc',
+              title: 'Ghi chú / Ý tưởng',
+              subtitle: 'Lưu tài liệu, nội dung cần nhớ hoặc liên kết',
               onTap: () {
                 Navigator.pop(context);
                 onAddNote();
               },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -119,21 +134,26 @@ class QuickAddSheet extends StatelessWidget {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+        ),
         child: Row(
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
                 color: iconBgColor,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: iconColor, size: 22),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,8 +161,8 @@ class QuickAddSheet extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
                       color: AppColors.onSurface,
                     ),
                   ),
@@ -157,7 +177,7 @@ class QuickAddSheet extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: AppColors.outlineVariant, size: 20),
+            const Icon(Icons.chevron_right_rounded, color: AppColors.outlineVariant, size: 20),
           ],
         ),
       ),

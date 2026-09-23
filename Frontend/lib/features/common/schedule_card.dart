@@ -29,21 +29,15 @@ class ScheduleCard extends StatelessWidget {
     final accentColor = _parseCardColor();
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: AppColors.surfaceCard,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isOngoing ? AppColors.primary.withOpacity(0.4) : AppColors.divider,
+          color: isOngoing ? AppColors.primary.withOpacity(0.5) : AppColors.divider.withOpacity(0.6),
           width: isOngoing ? 1.5 : 0.8,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            offset: const Offset(0, 2),
-            blurRadius: 6,
-          ),
-        ],
+        boxShadow: AppColors.cardShadow,
       ),
       child: Material(
         color: Colors.transparent,
@@ -57,7 +51,7 @@ class ScheduleCard extends StatelessWidget {
               children: [
                 // Colored Left Stripe
                 Container(
-                  width: 5,
+                  width: 4,
                   decoration: BoxDecoration(
                     color: accentColor,
                     borderRadius: const BorderRadius.only(
@@ -69,7 +63,7 @@ class ScheduleCard extends StatelessWidget {
                 // Card Content
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -78,8 +72,8 @@ class ScheduleCard extends StatelessWidget {
                           children: [
                             if (isOngoing)
                               Container(
-                                width: 8,
-                                height: 8,
+                                width: 7,
+                                height: 7,
                                 margin: const EdgeInsets.only(right: 6),
                                 decoration: const BoxDecoration(
                                   color: AppColors.primary,
@@ -91,7 +85,7 @@ class ScheduleCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                color: isOngoing ? AppColors.primary : AppColors.onSurfaceVariant,
+                                color: isOngoing ? AppColors.primary : AppColors.primary,
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -102,18 +96,17 @@ class ScheduleCard extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
-                                schedule.type.toUpperCase(),
+                                schedule.type,
                                 style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
                                   color: accentColor,
-                                  letterSpacing: 0.5,
                                 ),
                               ),
                             ),
                             if (schedule.isRecurring) ...[
                               const SizedBox(width: 6),
-                              const Icon(Icons.repeat, size: 14, color: AppColors.primary),
+                              Icon(Icons.repeat, size: 14, color: AppColors.outline.withOpacity(0.8)),
                             ],
                           ],
                         ),
@@ -122,9 +115,10 @@ class ScheduleCard extends StatelessWidget {
                         Text(
                           schedule.title,
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: AppColors.onSurface,
+                            letterSpacing: -0.2,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -139,7 +133,7 @@ class ScheduleCard extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   schedule.location!,
-                                  style: const TextStyle(fontSize: 12, color: AppColors.outline),
+                                  style: const TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -154,7 +148,7 @@ class ScheduleCard extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   schedule.note!,
-                                  style: const TextStyle(fontSize: 12, color: AppColors.outline),
+                                  style: const TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -169,7 +163,7 @@ class ScheduleCard extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.only(right: 12),
                   child: Center(
-                    child: Icon(Icons.chevron_right, color: AppColors.outlineVariant, size: 20),
+                    child: Icon(Icons.chevron_right, color: AppColors.outlineVariant, size: 18),
                   ),
                 ),
               ],

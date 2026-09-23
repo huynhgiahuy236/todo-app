@@ -65,7 +65,7 @@ class _AddNoteDialogState extends ConsumerState<AddNoteDialog> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.only(
-        top: 16,
+        top: 12,
         left: 20,
         right: 20,
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
@@ -75,59 +75,156 @@ class _AddNoteDialogState extends ConsumerState<AddNoteDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Drag Handle
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.outlineVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Thêm ghi chú',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                  'Thêm ghi chú mới',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.onSurface,
+                    letterSpacing: -0.3,
+                  ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close, color: AppColors.outline),
-                  onPressed: () => Navigator.pop(context),
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  borderRadius: BorderRadius.circular(16),
+                  child: const Padding(
+                    padding: EdgeInsets.all(4),
+                    child: Icon(Icons.close_rounded, color: AppColors.onSurfaceVariant, size: 22),
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
+
+            // Field 1: Title
+            const Text(
+              'TIÊU ĐỀ GHI CHÚ',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: AppColors.outline,
+                letterSpacing: 0.8,
+              ),
+            ),
+            const SizedBox(height: 6),
             TextField(
               controller: _titleController,
               autofocus: true,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              decoration: const InputDecoration(
-                hintText: 'Tiêu đề ghi chú...',
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
+              decoration: InputDecoration(
+                hintText: 'Nhập tiêu đề...',
+                hintStyle: const TextStyle(color: AppColors.outline, fontWeight: FontWeight.normal),
+                filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.divider.withOpacity(0.8)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.divider.withOpacity(0.8)),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 14),
+
+            // Field 2: Content
+            const Text(
+              'NỘI DUNG',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: AppColors.outline,
+                letterSpacing: 0.8,
+              ),
+            ),
+            const SizedBox(height: 6),
             TextField(
               controller: _contentController,
               maxLines: 3,
-              style: const TextStyle(fontSize: 14),
-              decoration: const InputDecoration(
-                hintText: 'Nội dung ghi chú...',
+              style: const TextStyle(fontSize: 14, color: AppColors.onSurface),
+              decoration: InputDecoration(
+                hintText: 'Nhập chi tiết ý tưởng, tài liệu, ghi nhớ...',
+                hintStyle: const TextStyle(color: AppColors.outline, fontWeight: FontWeight.normal),
+                filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.divider.withOpacity(0.8)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.divider.withOpacity(0.8)),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 14),
+
+            // Field 3: Category & Relation
+            const Text(
+              'PHÂN LOẠI & LIÊN KẾT',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: AppColors.outline,
+                letterSpacing: 0.8,
+              ),
+            ),
+            const SizedBox(height: 6),
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.divider),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.divider.withOpacity(0.8)),
                   ),
-                  child: DropdownButton<String>(
-                    value: _category,
-                    underline: const SizedBox(),
-                    items: const [
-                      DropdownMenuItem(value: 'idea', child: Text('Loại: Ý tưởng')),
-                      DropdownMenuItem(value: 'schedule', child: Text('Gắn với Lịch')),
-                      DropdownMenuItem(value: 'task', child: Text('Gắn với Việc')),
-                      DropdownMenuItem(value: 'study', child: Text('Tài liệu học')),
-                    ],
-                    onChanged: (val) {
-                      if (val != null) setState(() => _category = val);
-                    },
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _category,
+                      dropdownColor: AppColors.surfaceCard,
+                      style: const TextStyle(color: AppColors.onSurface, fontWeight: FontWeight.w600, fontSize: 13),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'idea',
+                          child: Text('Ý tưởng', style: TextStyle(color: AppColors.onSurface, fontWeight: FontWeight.w600)),
+                        ),
+                        DropdownMenuItem(
+                          value: 'schedule',
+                          child: Text('Lịch trình', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600)),
+                        ),
+                        DropdownMenuItem(
+                          value: 'task',
+                          child: Text('Công việc', style: TextStyle(color: AppColors.warning, fontWeight: FontWeight.w600)),
+                        ),
+                        DropdownMenuItem(
+                          value: 'study',
+                          child: Text('Học tập', style: TextStyle(color: AppColors.catStudy, fontWeight: FontWeight.w600)),
+                        ),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) setState(() => _category = val);
+                      },
+                    ),
                   ),
                 ),
                 if (_category == 'schedule' || _category == 'task') ...[
@@ -135,22 +232,42 @@ class _AddNoteDialogState extends ConsumerState<AddNoteDialog> {
                   Expanded(
                     child: TextField(
                       controller: _relationController,
-                      style: const TextStyle(fontSize: 13),
+                      style: const TextStyle(fontSize: 13, color: AppColors.onSurface, fontWeight: FontWeight.w600),
                       decoration: InputDecoration(
-                        hintText: _category == 'schedule' ? 'Tên lịch...' : 'Tên việc...',
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        hintText: _category == 'schedule' ? 'Tên lịch liên quan...' : 'Tên việc liên quan...',
+                        hintStyle: const TextStyle(color: AppColors.outline, fontSize: 13, fontWeight: FontWeight.normal),
+                        filled: true,
+                        fillColor: AppColors.surfaceContainerLow,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: AppColors.divider.withOpacity(0.8)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: AppColors.divider.withOpacity(0.8)),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
                     ),
                   ),
                 ],
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
+
+            // Submit Button
             ElevatedButton(
               onPressed: _isSubmitting ? null : _handleSave,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                elevation: 0,
+              ),
               child: _isSubmitting
                   ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : const Text('Lưu ghi chú'),
+                  : const Text('Lưu ghi chú', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15)),
             ),
           ],
         ),

@@ -55,9 +55,9 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.surfaceCard,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -66,7 +66,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
             // Drag Handle
             Center(
               child: Container(
-                width: 36,
+                width: 40,
                 height: 4,
                 decoration: BoxDecoration(
                   color: AppColors.outlineVariant,
@@ -74,7 +74,8 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
+
             // Header with Icon
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,11 +84,11 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                   width: 42,
                   height: 42,
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceContainerHigh,
+                    color: widget.isDelete ? AppColors.errorContainer : AppColors.surfaceContainerHigh,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    widget.isDelete ? Icons.delete_outline : Icons.event_repeat,
+                    widget.isDelete ? Icons.delete_outline_rounded : Icons.event_repeat_rounded,
                     color: widget.isDelete ? AppColors.error : AppColors.primary,
                     size: 22,
                   ),
@@ -103,14 +104,16 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
                           color: AppColors.onSurface,
+                          letterSpacing: -0.3,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 3),
                       Text(
                         sub,
                         style: const TextStyle(
                           fontSize: 13,
                           color: AppColors.onSurfaceVariant,
+                          height: 1.3,
                         ),
                       ),
                     ],
@@ -118,23 +121,33 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
+
             // Schedule Info Pill
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: AppColors.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.divider),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.divider.withOpacity(0.6)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
                       Text(
                         widget.schedule.title,
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.onSurface),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.onSurface),
                       ),
                       const Text(' • ', style: TextStyle(color: AppColors.outlineVariant)),
                       Text(
@@ -144,9 +157,10 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                     ],
                   ),
                   if (widget.newTimeRange != null) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                     Row(
                       children: [
+                        const SizedBox(width: 16),
                         Text(
                           '${widget.schedule.startTime} - ${widget.schedule.endTime}',
                           style: const TextStyle(
@@ -156,7 +170,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                           ),
                         ),
                         const SizedBox(width: 6),
-                        const Icon(Icons.arrow_forward, size: 14, color: AppColors.primary),
+                        const Icon(Icons.arrow_forward_rounded, size: 14, color: AppColors.primary),
                         const SizedBox(width: 6),
                         Text(
                           widget.newTimeRange!,
@@ -172,32 +186,36 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
+
             // Option 1: Only this event
             _buildOptionCard(
               scope: RecurrenceEditScope.single,
-              icon: Icons.today,
+              icon: Icons.today_rounded,
               title: widget.isDelete ? 'Chỉ xóa lịch này' : 'Chỉ lịch này',
               subtitle: 'Chỉ áp dụng cho ngày ${widget.targetDate}',
               isRecommended: true,
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
+
             // Option 2: This and following
             _buildOptionCard(
               scope: RecurrenceEditScope.future,
-              icon: Icons.fast_forward,
+              icon: Icons.fast_forward_rounded,
               title: widget.isDelete ? 'Lịch này và các lịch sau' : 'Lịch này và các lịch sau',
               subtitle: 'Áp dụng từ ngày ${widget.targetDate} trở đi',
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
+
             // Option 3: Entire series
             _buildOptionCard(
               scope: RecurrenceEditScope.series,
-              icon: Icons.all_inclusive,
+              icon: Icons.all_inclusive_rounded,
               title: widget.isDelete ? 'Toàn bộ chuỗi lịch' : 'Toàn bộ chuỗi lịch',
               subtitle: 'Áp dụng cho mọi ngày trong chuỗi',
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 18),
+
             // Action Buttons
             Row(
               children: [
@@ -205,11 +223,11 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context, null),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: AppColors.divider),
+                      side: BorderSide(color: AppColors.divider.withOpacity(0.8)),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 13),
                     ),
-                    child: const Text('Hủy', style: TextStyle(color: AppColors.onSurfaceVariant)),
+                    child: const Text('Hủy', style: TextStyle(color: AppColors.onSurfaceVariant, fontWeight: FontWeight.w600)),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -219,11 +237,12 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: widget.isDelete ? AppColors.error : AppColors.primary,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 13),
+                      elevation: 0,
                     ),
                     child: Text(
-                      widget.isDelete ? 'Xác nhận xóa' : 'Áp dụng',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                      widget.isDelete ? 'Xác nhận xóa' : 'Xác nhận',
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),
@@ -248,15 +267,17 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
     return InkWell(
       onTap: () => setState(() => _selectedScope = scope),
       borderRadius: BorderRadius.circular(14),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.surfaceContainerLow : AppColors.surfaceCard,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.divider,
+            color: isSelected ? AppColors.primary : AppColors.divider.withOpacity(0.8),
             width: isSelected ? 1.8 : 0.8,
           ),
+          boxShadow: isSelected ? [BoxShadow(color: AppColors.primary.withOpacity(0.08), blurRadius: 6)] : null,
         ),
         child: Row(
           children: [
@@ -309,18 +330,18 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
               ),
             ),
             Container(
-              width: 20,
-              height: 20,
+              width: 22,
+              height: 22,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isSelected ? AppColors.primary : Colors.transparent,
                 border: Border.all(
                   color: isSelected ? AppColors.primary : AppColors.outlineVariant,
-                  width: 2,
+                  width: 1.8,
                 ),
               ),
               child: isSelected
-                  ? const Icon(Icons.check, size: 13, color: Colors.white)
+                  ? const Icon(Icons.check, size: 14, color: Colors.white)
                   : null,
             ),
           ],

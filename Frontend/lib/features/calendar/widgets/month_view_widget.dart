@@ -46,7 +46,8 @@ class MonthViewWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.surfaceCard,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.divider),
+            boxShadow: AppColors.cardShadow,
+            border: Border.all(color: AppColors.divider.withOpacity(0.6)),
           ),
           child: TableCalendar<ScheduleModel>(
             firstDay: DateTime(2020),
@@ -54,6 +55,7 @@ class MonthViewWidget extends StatelessWidget {
             focusedDay: focusedMonth,
             startingDayOfWeek: StartingDayOfWeek.monday,
             calendarFormat: CalendarFormat.month,
+            rowHeight: 46,
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
@@ -61,9 +63,10 @@ class MonthViewWidget extends StatelessWidget {
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: AppColors.onSurface,
+                letterSpacing: -0.2,
               ),
-              leftChevronIcon: const Icon(Icons.chevron_left, color: AppColors.onSurfaceVariant),
-              rightChevronIcon: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
+              leftChevronIcon: const Icon(Icons.chevron_left_rounded, color: AppColors.onSurfaceVariant, size: 22),
+              rightChevronIcon: const Icon(Icons.chevron_right_rounded, color: AppColors.onSurfaceVariant, size: 22),
             ),
             selectedDayPredicate: (day) => DateFormatter.isSameDay(day, selectedDate),
             onDaySelected: (selectedDay, focusedDay) {
@@ -77,6 +80,10 @@ class MonthViewWidget extends StatelessWidget {
               final iso = DateFormatter.formatIsoDate(day);
               return allSchedules.where((s) => s.startDate == iso).toList();
             },
+            daysOfWeekStyle: const DaysOfWeekStyle(
+              weekdayStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.outline),
+              weekendStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.error),
+            ),
             calendarStyle: CalendarStyle(
               todayDecoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -85,6 +92,7 @@ class MonthViewWidget extends StatelessWidget {
               todayTextStyle: const TextStyle(
                 color: AppColors.primary,
                 fontWeight: FontWeight.w700,
+                fontSize: 14,
               ),
               selectedDecoration: const BoxDecoration(
                 color: AppColors.primary,
@@ -93,8 +101,14 @@ class MonthViewWidget extends StatelessWidget {
               selectedTextStyle: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
+                fontSize: 14,
               ),
-              weekendTextStyle: const TextStyle(color: AppColors.error),
+              defaultTextStyle: const TextStyle(
+                color: AppColors.onSurface,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+              weekendTextStyle: const TextStyle(color: AppColors.error, fontSize: 14, fontWeight: FontWeight.w500),
               outsideDaysVisible: false,
             ),
             calendarBuilders: CalendarBuilders(
@@ -110,9 +124,9 @@ class MonthViewWidget extends StatelessWidget {
                         : _parseColor(event.color, event.type);
 
                     return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 1),
-                      width: 5,
-                      height: 5,
+                      margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                      width: 4.5,
+                      height: 4.5,
                       decoration: BoxDecoration(
                         color: color,
                         shape: BoxShape.circle,
