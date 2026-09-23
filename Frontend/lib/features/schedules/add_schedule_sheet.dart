@@ -209,69 +209,97 @@ class _AddScheduleSheetState extends ConsumerState<AddScheduleSheet> {
   }
 
   void _pickReminder() {
-    final options = ['Đúng giờ', 'Trước 10 phút', 'Trước 15 phút', 'Trước 30 phút', 'Trước 1 tiếng', 'Không nhắc'];
+    final options = [
+      'Đúng giờ',
+      'Trước 5 phút',
+      'Trước 10 phút',
+      'Trước 15 phút',
+      'Trước 30 phút',
+      'Trước 1 tiếng',
+      'Trước 2 tiếng',
+      'Trước 1 ngày',
+      'Trước 2 ngày',
+      'Trước 3 ngày',
+      'Trước 1 tuần',
+      'Không nhắc',
+    ];
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        decoration: BoxDecoration(
-          color: context.isDarkMode ? const Color(0xFF1C1C1E) : Colors.white,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(ctx).size.height * 0.75,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: BoxDecoration(
+          color: ctx.surfaceCard,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: SafeArea(
+          top: false,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
                 child: Container(
-                  width: 36,
-                  height: 4,
+                  width: 40,
+                  height: 4.5,
                   decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
+                    color: ctx.borderDivider,
+                    borderRadius: BorderRadius.circular(3),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
               Text(
                 'Nhắc nhở thông báo',
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: context.textPrimary,
+                  color: ctx.textPrimary,
+                  letterSpacing: -0.3,
                 ),
               ),
               const SizedBox(height: 12),
-              ...options.map((opt) {
-                final isSelected = opt == _reminderOption;
-                return InkWell(
-                  onTap: () {
-                    setState(() => _reminderOption = opt);
-                    Navigator.pop(ctx);
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          opt,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                            color: isSelected ? context.textPrimary : context.textSecondary,
+              Flexible(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: options.map((opt) {
+                      final isSelected = opt == _reminderOption;
+                      return InkWell(
+                        onTap: () {
+                          setState(() => _reminderOption = opt);
+                          Navigator.pop(ctx);
+                        },
+                        borderRadius: BorderRadius.circular(14),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                opt,
+                                style: TextStyle(
+                                  fontSize: 15.5,
+                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                  color: isSelected ? ctx.textPrimary : ctx.textSecondary,
+                                ),
+                              ),
+                              if (isSelected)
+                                Icon(Icons.check_rounded, color: ctx.textPrimary, size: 20),
+                            ],
                           ),
                         ),
-                        if (isSelected)
-                          Icon(Icons.check_rounded, color: context.textPrimary, size: 20),
-                      ],
-                    ),
+                      );
+                    }).toList(),
                   ),
-                );
-              }),
+                ),
+              ),
+              const SizedBox(height: 8),
             ],
           ),
         ),
@@ -283,14 +311,26 @@ class _AddScheduleSheetState extends ConsumerState<AddScheduleSheet> {
     if (_reminderOption == 'Không nhắc') return;
 
     Duration offset = Duration.zero;
-    if (_reminderOption == 'Trước 10 phút') {
+    if (_reminderOption == 'Trước 5 phút') {
+      offset = const Duration(minutes: 5);
+    } else if (_reminderOption == 'Trước 10 phút') {
       offset = const Duration(minutes: 10);
     } else if (_reminderOption == 'Trước 15 phút') {
       offset = const Duration(minutes: 15);
     } else if (_reminderOption == 'Trước 30 phút') {
       offset = const Duration(minutes: 30);
-    } else if (_reminderOption == 'Trước 1 tiếng') {
+    } else if (_reminderOption == 'Trước 1 tiếng' || _reminderOption == 'Trước 1 giờ') {
       offset = const Duration(hours: 1);
+    } else if (_reminderOption == 'Trước 2 tiếng' || _reminderOption == 'Trước 2 giờ') {
+      offset = const Duration(hours: 2);
+    } else if (_reminderOption == 'Trước 1 ngày') {
+      offset = const Duration(days: 1);
+    } else if (_reminderOption == 'Trước 2 ngày') {
+      offset = const Duration(days: 2);
+    } else if (_reminderOption == 'Trước 3 ngày') {
+      offset = const Duration(days: 3);
+    } else if (_reminderOption == 'Trước 1 tuần') {
+      offset = const Duration(days: 7);
     }
 
     final scheduleStart = DateTime(

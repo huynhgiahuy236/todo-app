@@ -392,18 +392,32 @@ class CurvedNavBarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final path = getCurvedNavBarPath(size);
 
-    // 1. Soft ambient shadow
-    final shadowPaint1 = Paint()
-      ..color = isDark ? Colors.black.withValues(alpha: 0.45) : const Color(0x18000000)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18);
-    canvas.drawPath(path.shift(const Offset(0, 6)), shadowPaint1);
+    // 1. Layered rich floating drop shadows (makes the pill pop and float)
+    // Layer A: Wide atmospheric ambient shadow
+    final ambientShadow = Paint()
+      ..color = isDark
+          ? Colors.black.withValues(alpha: 0.65)
+          : const Color(0xFF000000).withValues(alpha: 0.16)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 24);
+    canvas.drawPath(path.shift(const Offset(0, 8)), ambientShadow);
 
-    final shadowPaint2 = Paint()
-      ..color = isDark ? Colors.black.withValues(alpha: 0.25) : const Color(0x0A000000)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
-    canvas.drawPath(path.shift(const Offset(0, 2)), shadowPaint2);
+    // Layer B: Medium directional elevation shadow
+    final mediumShadow = Paint()
+      ..color = isDark
+          ? Colors.black.withValues(alpha: 0.45)
+          : const Color(0xFF000000).withValues(alpha: 0.10)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
+    canvas.drawPath(path.shift(const Offset(0, 3)), mediumShadow);
 
-    // 2. Glass gradient fill
+    // Layer C: Crisp contact shadow
+    final contactShadow = Paint()
+      ..color = isDark
+          ? Colors.black.withValues(alpha: 0.30)
+          : const Color(0xFF000000).withValues(alpha: 0.06)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+    canvas.drawPath(path.shift(const Offset(0, 1)), contactShadow);
+
+    // 2. Glossy glass gradient fill
     final rect = Offset.zero & size;
     final fillPaint = Paint()
       ..shader = LinearGradient(
@@ -411,23 +425,33 @@ class CurvedNavBarPainter extends CustomPainter {
         end: Alignment.bottomCenter,
         colors: isDark
             ? [
-                const Color(0xFF28282C).withValues(alpha: 0.92),
-                const Color(0xFF18181A).withValues(alpha: 0.82),
+                const Color(0xFF2C2C2E).withValues(alpha: 0.88),
+                const Color(0xFF1C1C1E).withValues(alpha: 0.82),
               ]
             : [
-                Colors.white.withValues(alpha: 0.96),
-                Colors.white.withValues(alpha: 0.88),
+                const Color(0xFFFFFFFF).withValues(alpha: 0.92),
+                const Color(0xFFF2F2F7).withValues(alpha: 0.82),
               ],
       ).createShader(rect);
     canvas.drawPath(path, fillPaint);
 
-    // 3. Subtle stroke border
+    // 3. Specular rim highlight & boundary border
     final borderPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0
-      ..color = isDark
-          ? Colors.white.withValues(alpha: 0.16)
-          : Colors.white.withValues(alpha: 0.90);
+      ..strokeWidth = 1.2
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: isDark
+            ? [
+                Colors.white.withValues(alpha: 0.32),
+                Colors.white.withValues(alpha: 0.08),
+              ]
+            : [
+                Colors.white,
+                const Color(0xFF000000).withValues(alpha: 0.12),
+              ],
+      ).createShader(rect);
     canvas.drawPath(path, borderPaint);
   }
 

@@ -370,14 +370,17 @@ class _AddTaskDialogState extends ConsumerState<AddTaskDialog> {
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: isSelected
-                ? (isDark ? AppColors.primary.withValues(alpha: 0.3) : const Color(0xFFEFF6FF))
+                ? (isDark ? const Color(0xFF3A3A3C) : Colors.white)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
-            border: isSelected
-                ? Border.all(
-                    color: isDark ? AppColors.primary : const Color(0xFF3B82F6),
-                    width: 1.2,
-                  )
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ]
                 : null,
           ),
           child: Center(
@@ -387,8 +390,8 @@ class _AddTaskDialogState extends ConsumerState<AddTaskDialog> {
                 fontSize: 12.5,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected
-                    ? (isDark ? const Color(0xFF60A5FA) : const Color(0xFF2563EB))
-                    : (isDark ? Colors.white70 : Colors.black87),
+                    ? context.textPrimary
+                    : context.textSecondary,
               ),
             ),
           ),

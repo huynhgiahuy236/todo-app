@@ -244,21 +244,28 @@ class _AddNoteDialogState extends ConsumerState<AddNoteDialog> {
                             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? (isDark
-                                      ? AppColors.primary.withValues(alpha: 0.25)
-                                      : const Color(0xFFEFF6FF))
+                                  ? (isDark ? Colors.white : const Color(0xFF1C1C1E))
                                   : (isDark
                                       ? const Color(0xFF2C2C2E).withValues(alpha: 0.6)
                                       : const Color(0xFFF1F5F9)),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: isSelected
-                                    ? (isDark ? AppColors.primary : const Color(0xFF3B82F6))
+                                    ? Colors.transparent
                                     : (isDark
                                         ? const Color(0xFF3A3A3C).withValues(alpha: 0.5)
                                         : const Color(0xFFE2E8F0)),
                                 width: isSelected ? 1.3 : 0.8,
                               ),
+                              boxShadow: isSelected
+                                  ? [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.12),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                  : null,
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -267,7 +274,7 @@ class _AddNoteDialogState extends ConsumerState<AddNoteDialog> {
                                   cat['icon'] as IconData,
                                   size: 15,
                                   color: isSelected
-                                      ? (isDark ? const Color(0xFF60A5FA) : const Color(0xFF2563EB))
+                                      ? (isDark ? Colors.black : Colors.white)
                                       : context.textSecondary,
                                 ),
                                 const SizedBox(width: 6),
@@ -277,7 +284,7 @@ class _AddNoteDialogState extends ConsumerState<AddNoteDialog> {
                                     fontSize: 13,
                                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                                     color: isSelected
-                                        ? (isDark ? const Color(0xFF60A5FA) : const Color(0xFF2563EB))
+                                        ? (isDark ? Colors.black : Colors.white)
                                         : context.textSecondary,
                                   ),
                                 ),

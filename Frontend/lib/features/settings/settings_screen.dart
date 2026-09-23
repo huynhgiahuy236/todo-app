@@ -30,14 +30,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(ctx).size.height * 0.75,
+        ),
         decoration: BoxDecoration(
-          color: context.surfaceCard,
+          color: ctx.surfaceCard,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: SafeArea(
+          top: false,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,51 +52,59 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   width: 40,
                   height: 4.5,
                   decoration: BoxDecoration(
-                    color: context.borderDivider,
+                    color: ctx.borderDivider,
                     borderRadius: BorderRadius.circular(3),
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 18),
               Text(
                 title,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: context.textPrimary,
+                  color: ctx.textPrimary,
                   letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(height: 14),
-              ...options.map((opt) {
-                final isSelected = opt == current;
-                return InkWell(
-                  onTap: () {
-                    onSelected(opt);
-                    Navigator.pop(ctx);
-                  },
-                  borderRadius: BorderRadius.circular(14),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          opt,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                            color: isSelected ? context.textPrimary : context.textSecondary,
+              const SizedBox(height: 12),
+              Flexible(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: options.map((opt) {
+                      final isSelected = opt == current;
+                      return InkWell(
+                        onTap: () {
+                          onSelected(opt);
+                          Navigator.pop(ctx);
+                        },
+                        borderRadius: BorderRadius.circular(14),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                opt,
+                                style: TextStyle(
+                                  fontSize: 15.5,
+                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                  color: isSelected ? ctx.textPrimary : ctx.textSecondary,
+                                ),
+                              ),
+                              if (isSelected)
+                                Icon(Icons.check_rounded, color: ctx.textPrimary, size: 20),
+                            ],
                           ),
                         ),
-                        if (isSelected)
-                          Icon(Icons.check_rounded, color: context.textPrimary, size: 22),
-                      ],
-                    ),
+                      );
+                    }).toList(),
                   ),
-                );
-              }),
-              const SizedBox(height: 12),
+                ),
+              ),
+              const SizedBox(height: 8),
             ],
           ),
         ),
@@ -266,7 +279,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       onTap: () {
                         _showPicker(
                           title: 'Thời gian nhắc trước',
-                          options: ['Đúng giờ', '5 phút', '15 phút', '30 phút', '1 giờ', '1 ngày'],
+                          options: [
+                            'Đúng giờ',
+                            '5 phút',
+                            '10 phút',
+                            '15 phút',
+                            '30 phút',
+                            '1 giờ',
+                            '2 giờ',
+                            '1 ngày',
+                            '2 ngày',
+                            '3 ngày',
+                            '1 tuần',
+                          ],
                           current: _reminderTime,
                           onSelected: (val) => setState(() => _reminderTime = val),
                         );
