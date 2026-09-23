@@ -46,7 +46,7 @@ class _AddScheduleSheetState extends ConsumerState<AddScheduleSheet> {
 
   late DateTime _selectedDate;
   TimeOfDay _startTime = const TimeOfDay(hour: 8, minute: 0);
-  TimeOfDay _endTime = const TimeOfDay(hour: 10, minute: 0);
+  TimeOfDay? _endTime;
 
   String _selectedCategory = 'study';
   String _selectedColor = '#1677E8';
@@ -75,7 +75,7 @@ class _AddScheduleSheetState extends ConsumerState<AddScheduleSheet> {
       _locationController.text = init.location ?? '';
       _selectedDate = DateFormatter.parseIsoDate(init.startDate);
       _startTime = _parseTimeOfDay(init.startTime);
-      _endTime = _parseTimeOfDay(init.endTime);
+      _endTime = init.endTime.isNotEmpty ? _parseTimeOfDay(init.endTime) : null;
       _selectedCategory = init.type;
       _selectedColor = init.color;
       _recurrenceType = init.recurrence?.type ?? 'none';
@@ -172,11 +172,6 @@ class _AddScheduleSheetState extends ConsumerState<AddScheduleSheet> {
     if (picked != null) {
       setState(() {
         _startTime = picked;
-        final startMins = picked.hour * 60 + picked.minute;
-        final endMins = _endTime.hour * 60 + _endTime.minute;
-        if (endMins <= startMins) {
-          _endTime = TimeOfDay(hour: (picked.hour + 1) % 24, minute: picked.minute);
-        }
       });
     }
   }
@@ -185,7 +180,7 @@ class _AddScheduleSheetState extends ConsumerState<AddScheduleSheet> {
     final isDark = context.isDarkMode;
     final picked = await showTimePicker(
       context: context,
-      initialTime: _endTime,
+      initialTime: _endTime ?? TimeOfDay(hour: (_startTime.hour + 1) % 24, minute: _startTime.minute),
       builder: (context, child) {
         return Theme(
           data: isDark
@@ -331,7 +326,7 @@ class _AddScheduleSheetState extends ConsumerState<AddScheduleSheet> {
 
     final isoDate = DateFormatter.formatIsoDate(_selectedDate);
     final startTimeStr = _formatTimeOfDay(_startTime);
-    final endTimeStr = _formatTimeOfDay(_endTime);
+    final endTimeStr = _endTime != null ? _formatTimeOfDay(_endTime!) : '';
 
     final payload = {
       'title': title,
@@ -379,7 +374,7 @@ class _AddScheduleSheetState extends ConsumerState<AddScheduleSheet> {
           context,
           schedule: init,
           targetDate: isoDate,
-          newTimeRange: '$startTimeStr - $endTimeStr',
+          newTimeRange: endTimeStr.isNotEmpty ? '$startTimeStr - $endTimeStr' : startTimeStr,
         );
 
         if (scope == null) {
@@ -743,26 +738,74 @@ class _AddScheduleSheetState extends ConsumerState<AddScheduleSheet> {
                                     padding: const EdgeInsets.symmetric(horizontal: 6),
                                     child: Icon(Icons.arrow_forward_rounded, size: 14, color: context.textSecondary),
                                   ),
-                                  InkWell(
-                                    onTap: _pickEndTime,
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                                  if (_endTime == null)
+                                    InkWell(
+                                      onTap: _pickEndTime,
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                                        decoration: BoxDecoration(
+                                          color: pillBg,
+                                          borderRadius: BorderRadius.circular(12),
+                                          border: Border.all(color: pillBorder, width: 0.8),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(Icons.add_rounded, size: 14, color: context.textSecondary),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              'Kết thúc',
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w600,
+                                                color: context.textSecondary,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  else
+                                    Container(
                                       decoration: BoxDecoration(
                                         color: pillBg,
                                         borderRadius: BorderRadius.circular(12),
                                         border: Border.all(color: pillBorder, width: 0.8),
                                       ),
-                                      child: Text(
-                                        _formatTimeOfDay(_endTime),
-                                        style: TextStyle(
-                                          fontSize: 13.5,
-                                          fontWeight: FontWeight.w700,
-                                          color: context.textPrimary,
-                                        ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          InkWell(
+                                            onTap: _pickEndTime,
+                                            borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: 10, top: 7, bottom: 7, right: 4),
+                                              child: Text(
+                                                _formatTimeOfDay(_endTime!),
+                                                style: TextStyle(
+                                                  fontSize: 13.5,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: context.textPrimary,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () => setState(() => _endTime = null),
+                                            borderRadius: const BorderRadius.horizontal(right: Radius.circular(12)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(right: 8, left: 2, top: 7, bottom: 7),
+                                              child: Icon(
+                                                Icons.close_rounded,
+                                                size: 14,
+                                                color: context.textSecondary,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ),
                                 ],
                               ),
                             ],

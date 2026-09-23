@@ -45,7 +45,7 @@ const ScheduleSchema = new Schema<ISchedule>(
     startDate: { type: String, required: true, index: true },
     endDate: { type: String, required: true },
     startTime: { type: String, required: true },
-    endTime: { type: String, required: true },
+    endTime: { type: String, required: false, default: '' },
     color: { type: String, default: '#1677E8' },
     note: { type: String, default: '' },
     location: { type: String, default: '' },

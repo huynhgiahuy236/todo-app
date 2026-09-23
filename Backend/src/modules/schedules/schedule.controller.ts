@@ -28,8 +28,8 @@ export class ScheduleController {
   static async createSchedule(req: AuthRequest, res: Response): Promise<void> {
     try {
       const { title, startDate, startTime, endTime } = req.body;
-      if (!title || !startDate || !startTime || !endTime) {
-        sendError(res, 'Vui lòng điền đủ Tên lịch, Ngày, Giờ bắt đầu và Giờ kết thúc', 400);
+      if (!title || !startDate || !startTime) {
+        sendError(res, 'Vui lòng điền đủ Tên lịch, Ngày và Giờ bắt đầu', 400);
         return;
       }
 

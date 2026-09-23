@@ -86,7 +86,7 @@ class ScheduleModel {
       startDate: json['startDate'] ?? '',
       endDate: json['endDate'] ?? json['startDate'] ?? '',
       startTime: json['startTime'] ?? '08:00',
-      endTime: json['endTime'] ?? '09:00',
+      endTime: json['endTime'] ?? '',
       color: json['color'] ?? '#1677E8',
       note: json['note'],
       location: json['location'],
