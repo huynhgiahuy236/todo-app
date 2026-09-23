@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.scheduleRoutes = void 0;
+const express_1 = require("express");
+const schedule_controller_1 = require("./schedule.controller");
+const auth_middleware_1 = require("../../middlewares/auth.middleware");
+const router = (0, express_1.Router)();
+router.use(auth_middleware_1.authenticateJWT);
+router.get('/', schedule_controller_1.ScheduleController.getSchedules);
+router.post('/', schedule_controller_1.ScheduleController.createSchedule);
+router.get('/:id', schedule_controller_1.ScheduleController.getScheduleById);
+router.patch('/:id', schedule_controller_1.ScheduleController.updateSchedule);
+router.patch('/:id/occurrence', schedule_controller_1.ScheduleController.updateOccurrence);
+router.patch('/:id/future', schedule_controller_1.ScheduleController.updateFuture);
+router.patch('/:id/series', schedule_controller_1.ScheduleController.updateSeries);
+router.delete('/:id', schedule_controller_1.ScheduleController.deleteSchedule);
+exports.scheduleRoutes = router;

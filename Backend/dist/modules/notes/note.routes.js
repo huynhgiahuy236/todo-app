@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.noteRoutes = void 0;
+const express_1 = require("express");
+const note_controller_1 = require("./note.controller");
+const auth_middleware_1 = require("../../middlewares/auth.middleware");
+const router = (0, express_1.Router)();
+router.use(auth_middleware_1.authenticateJWT);
+router.get('/', note_controller_1.NoteController.getNotes);
+router.post('/', note_controller_1.NoteController.createNote);
+router.patch('/:id', note_controller_1.NoteController.updateNote);
+router.patch('/:id/pin', note_controller_1.NoteController.togglePin);
+router.delete('/:id', note_controller_1.NoteController.deleteNote);
+exports.noteRoutes = router;
