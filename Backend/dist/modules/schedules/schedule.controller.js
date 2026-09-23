@@ -21,8 +21,8 @@ class ScheduleController {
     static async createSchedule(req, res) {
         try {
             const { title, startDate, startTime, endTime } = req.body;
-            if (!title || !startDate || !startTime || !endTime) {
-                (0, response_util_1.sendError)(res, 'Vui lòng điền đủ Tên lịch, Ngày, Giờ bắt đầu và Giờ kết thúc', 400);
+            if (!title || !startDate || !startTime) {
+                (0, response_util_1.sendError)(res, 'Vui lòng điền đủ Tên lịch, Ngày và Giờ bắt đầu', 400);
                 return;
             }
             const schedule = await schedule_service_1.ScheduleService.createSchedule(req.userId, req.body);

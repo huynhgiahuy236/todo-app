@@ -287,19 +287,19 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? (isDark ? AppColors.primary : const Color(0xFFEFF6FF))
+              ? (isDark ? Colors.white : const Color(0xFF1C1C1E))
               : context.surfaceCard,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
-                ? (isDark ? AppColors.primary : const Color(0xFF3B82F6))
+                ? Colors.transparent
                 : context.borderDivider,
             width: isSelected ? 1.2 : 0.8,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.2),
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.12),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -312,7 +312,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
             fontSize: 12.5,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             color: isSelected
-                ? (isDark ? Colors.white : const Color(0xFF2563EB))
+                ? (isDark ? Colors.black : Colors.white)
                 : context.textSecondary,
           ),
         ),
