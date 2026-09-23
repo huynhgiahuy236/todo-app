@@ -131,21 +131,29 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_month_rounded, color: AppColors.primary, size: 18),
-                          const SizedBox(width: 8),
-                          Text(
-                            DateFormatter.formatMonthYear(selectedDate),
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: context.textPrimary,
+                      Expanded(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.calendar_month_rounded, color: AppColors.primary, size: 18),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                DateFormatter.formatMonthYear(selectedDate),
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: context.textPrimary,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           InkWell(
                             borderRadius: BorderRadius.circular(16),
