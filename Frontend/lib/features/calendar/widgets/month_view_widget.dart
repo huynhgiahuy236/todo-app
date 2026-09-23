@@ -38,16 +38,18 @@ class MonthViewWidget extends StatelessWidget {
     final selectedIso = DateFormatter.formatIsoDate(selectedDate);
     final daySchedules = allSchedules.where((s) => s.startDate == selectedIso).toList();
 
-    return Column(
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      padding: const EdgeInsets.only(bottom: 120),
       children: [
         // Calendar Table Card
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: AppColors.surfaceCard,
+            color: context.surfaceCard,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: AppColors.cardShadow,
-            border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+            boxShadow: AppColors.cardShadow(context),
+            border: Border.all(color: context.borderDivider),
           ),
           child: TableCalendar<ScheduleModel>(
             firstDay: DateTime(2020),
@@ -55,18 +57,19 @@ class MonthViewWidget extends StatelessWidget {
             focusedDay: focusedMonth,
             startingDayOfWeek: StartingDayOfWeek.monday,
             calendarFormat: CalendarFormat.month,
-            rowHeight: 46,
+            availableGestures: AvailableGestures.horizontalSwipe,
+            rowHeight: 48,
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
-              titleTextStyle: const TextStyle(
+              titleTextStyle: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: AppColors.onSurface,
+                color: context.textPrimary,
                 letterSpacing: -0.2,
               ),
-              leftChevronIcon: const Icon(Icons.chevron_left_rounded, color: AppColors.onSurfaceVariant, size: 22),
-              rightChevronIcon: const Icon(Icons.chevron_right_rounded, color: AppColors.onSurfaceVariant, size: 22),
+              leftChevronIcon: Icon(Icons.chevron_left_rounded, color: context.textSecondary, size: 22),
+              rightChevronIcon: Icon(Icons.chevron_right_rounded, color: context.textSecondary, size: 22),
             ),
             selectedDayPredicate: (day) => DateFormatter.isSameDay(day, selectedDate),
             onDaySelected: (selectedDay, focusedDay) {
@@ -80,59 +83,150 @@ class MonthViewWidget extends StatelessWidget {
               final iso = DateFormatter.formatIsoDate(day);
               return allSchedules.where((s) => s.startDate == iso).toList();
             },
-            daysOfWeekStyle: const DaysOfWeekStyle(
-              weekdayStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.outline),
-              weekendStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.error),
+            daysOfWeekStyle: DaysOfWeekStyle(
+              weekdayStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: context.textMuted),
+              weekendStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.error),
             ),
-            calendarStyle: CalendarStyle(
-              todayDecoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primary, width: 1.5),
-              ),
-              todayTextStyle: const TextStyle(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-              ),
-              selectedDecoration: const BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
-              selectedTextStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-              ),
-              defaultTextStyle: const TextStyle(
-                color: AppColors.onSurface,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-              weekendTextStyle: const TextStyle(color: AppColors.error, fontSize: 14, fontWeight: FontWeight.w500),
+            calendarStyle: const CalendarStyle(
               outsideDaysVisible: false,
+              markersAutoAligned: false,
+              markersMaxCount: 0, // We control markers completely via custom builders
             ),
             calendarBuilders: CalendarBuilders(
-              markerBuilder: (context, day, events) {
-                if (events.isEmpty) return null;
+              // 1. Selected Day
+              selectedBuilder: (context, day, focusedDay) {
+                final iso = DateFormatter.formatIsoDate(day);
+                final dayEvents = allSchedules.where((s) => s.startDate == iso).toList();
+                final hasEvents = dayEvents.isNotEmpty;
+                final isDark = context.isDarkMode;
+                final activeBg = isDark ? Colors.white : Colors.black;
+                final textCol = isDark ? Colors.black : Colors.white;
+
+                return Center(
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: activeBg,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDark ? const Color(0x60000000) : const Color(0x28000000),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${day.day}',
+                          style: TextStyle(
+                            color: textCol,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 13.5,
+                            height: 1.1,
+                          ),
+                        ),
+                        if (hasEvents)
+                          Container(
+                            margin: const EdgeInsets.only(top: 2),
+                            width: 3.5,
+                            height: 3.5,
+                            decoration: BoxDecoration(
+                              color: textCol.withValues(alpha: 0.9),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+
+              // 2. Today (when not selected)
+              todayBuilder: (context, day, focusedDay) {
                 final isSelected = DateFormatter.isSameDay(day, selectedDate);
+                if (isSelected) return null;
+                final iso = DateFormatter.formatIsoDate(day);
+                final hasEvents = allSchedules.any((s) => s.startDate == iso);
 
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: events.take(3).map((event) {
-                    final color = isSelected
-                        ? Colors.white
-                        : _parseColor(event.color, event.type);
+                return Center(
+                  child: Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: context.isDarkMode
+                          ? Colors.white.withValues(alpha: 0.12)
+                          : AppColors.primary.withValues(alpha: 0.08),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${day.day}',
+                          style: TextStyle(
+                            color: context.textPrimary,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 13.5,
+                            height: 1.1,
+                          ),
+                        ),
+                        if (hasEvents)
+                          Container(
+                            margin: const EdgeInsets.only(top: 2),
+                            width: 3.5,
+                            height: 3.5,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF10B981),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
 
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 1.5),
-                      width: 4.5,
-                      height: 4.5,
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                      ),
-                    );
-                  }).toList(),
+              // 3. Default Days
+              defaultBuilder: (context, day, focusedDay) {
+                final iso = DateFormatter.formatIsoDate(day);
+                final dayEvents = allSchedules.where((s) => s.startDate == iso).toList();
+                final isWeekend = day.weekday == DateTime.sunday;
+
+                return Center(
+                  child: SizedBox(
+                    width: 36,
+                    height: 36,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${day.day}',
+                          style: TextStyle(
+                            color: isWeekend ? AppColors.error : context.textPrimary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13.5,
+                            height: 1.1,
+                          ),
+                        ),
+                        if (dayEvents.isNotEmpty)
+                          Container(
+                            margin: const EdgeInsets.only(top: 2),
+                            width: 3.5,
+                            height: 3.5,
+                            decoration: BoxDecoration(
+                              color: _parseColor(dayEvents.first.color, dayEvents.first.type),
+                              shape: BoxShape.circle,
+                            ),
+                          )
+                        else
+                          const SizedBox(height: 5.5),
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
@@ -147,7 +241,7 @@ class MonthViewWidget extends StatelessWidget {
             children: [
               Text(
                 DateFormatter.formatDisplayDateVi(selectedDate),
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: context.textPrimary),
               ),
               Text(
                 '${daySchedules.length} sự kiện',
@@ -158,41 +252,37 @@ class MonthViewWidget extends StatelessWidget {
         ),
 
         // Selected Date Schedules List
-        Expanded(
-          child: daySchedules.isEmpty
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Không có lịch trình cho ngày này',
-                          style: TextStyle(fontSize: 13, color: AppColors.outline),
-                        ),
-                        const SizedBox(height: 8),
-                        TextButton.icon(
-                          onPressed: () => AddScheduleSheet.show(context, defaultDate: selectedDate),
-                          icon: const Icon(Icons.add, size: 16),
-                          label: const Text('Thêm lịch cho ngày này'),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 88),
-                  itemCount: daySchedules.length,
-                  itemBuilder: (context, index) {
-                    final schedule = daySchedules[index];
-                    return ScheduleCard(
-                      schedule: schedule,
-                      onTap: () => ScheduleDetailDialog.show(context, schedule),
-                    );
-                  },
+        if (daySchedules.isEmpty)
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Không có lịch trình cho ngày này',
+                  style: TextStyle(fontSize: 13, color: AppColors.outline),
                 ),
-        ),
+                const SizedBox(height: 8),
+                TextButton.icon(
+                  onPressed: () => AddScheduleSheet.show(context, defaultDate: selectedDate),
+                  icon: const Icon(Icons.add, size: 16),
+                  label: const Text('Thêm lịch cho ngày này'),
+                ),
+              ],
+            ),
+          )
+        else
+          ...daySchedules.map((schedule) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: ScheduleCard(
+                schedule: schedule,
+                onTap: () => ScheduleDetailDialog.show(context, schedule),
+              ),
+            );
+          }),
       ],
     );
   }
 }
+

@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 
@@ -32,153 +33,178 @@ class QuickAddSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceCard,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Drag Handle
-            Center(
-              child: Container(
-                width: 36,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.outlineVariant,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+    final isDark = context.isDarkMode;
+
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+        child: Container(
+          decoration: BoxDecoration(
+            color: isDark
+                ? const Color(0xFF1C1C1E).withValues(alpha: 0.88)
+                : const Color(0xFFF9F9FC).withValues(alpha: 0.90),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            border: Border(
+              top: BorderSide(
+                color: isDark
+                    ? const Color(0xFF38383A).withValues(alpha: 0.6)
+                    : const Color(0xFFE5E5EA).withValues(alpha: 0.8),
+                width: 0.8,
               ),
             ),
-            const SizedBox(height: 14),
-
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Tạo mới nhanh',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.onSurface,
-                    letterSpacing: -0.3,
+                // Drag Handle
+                Center(
+                  child: Container(
+                    width: 38,
+                    height: 4.5,
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF48484A) : const Color(0xFFC7C7CC),
+                      borderRadius: BorderRadius.circular(2.5),
+                    ),
                   ),
                 ),
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  borderRadius: BorderRadius.circular(16),
-                  child: const Padding(
-                    padding: EdgeInsets.all(4),
-                    child: Icon(Icons.close_rounded, color: AppColors.onSurfaceVariant, size: 22),
-                  ),
+                const SizedBox(height: 16),
+
+                // Header
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Tạo mới',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: context.textPrimary,
+                        letterSpacing: -0.4,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF2C2C2E).withValues(alpha: 0.8)
+                              : const Color(0xFFE5E5EA).withValues(alpha: 0.8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.close_rounded, color: context.textSecondary, size: 18),
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 20),
+
+                // 3 Minimal Action Cards
+                Row(
+                  children: [
+                    _buildActionCard(
+                      context: context,
+                      icon: Icons.calendar_month_rounded,
+                      label: 'Lịch trình',
+                      onTap: () {
+                        Navigator.pop(context);
+                        onAddSchedule();
+                      },
+                    ),
+                    const SizedBox(width: 12),
+                    _buildActionCard(
+                      context: context,
+                      icon: Icons.check_circle_outline_rounded,
+                      label: 'Việc làm',
+                      onTap: () {
+                        Navigator.pop(context);
+                        onAddTask();
+                      },
+                    ),
+                    const SizedBox(width: 12),
+                    _buildActionCard(
+                      context: context,
+                      icon: Icons.edit_note_rounded,
+                      label: 'Ghi chú',
+                      onTap: () {
+                        Navigator.pop(context);
+                        onAddNote();
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 18),
               ],
             ),
-            const SizedBox(height: 14),
-
-            // Options
-            _buildOption(
-              icon: Icons.calendar_month_rounded,
-              iconColor: AppColors.primary,
-              iconBgColor: AppColors.primaryFixed,
-              title: 'Lịch trình / Buổi học',
-              subtitle: 'Thêm buổi học, ca làm việc, cuộc họp hay sự kiện',
-              onTap: () {
-                Navigator.pop(context);
-                onAddSchedule();
-              },
-            ),
-            const SizedBox(height: 8),
-            _buildOption(
-              icon: Icons.task_alt_rounded,
-              iconColor: AppColors.warning,
-              iconBgColor: AppColors.warning.withOpacity(0.15),
-              title: 'Việc cần làm / Deadline',
-              subtitle: 'Thêm đầu việc, bài tập và hạn hoàn thành',
-              onTap: () {
-                Navigator.pop(context);
-                onAddTask();
-              },
-            ),
-            const SizedBox(height: 8),
-            _buildOption(
-              icon: Icons.edit_note_rounded,
-              iconColor: AppColors.catPersonal,
-              iconBgColor: AppColors.catPersonal.withOpacity(0.15),
-              title: 'Ghi chú / Ý tưởng',
-              subtitle: 'Lưu tài liệu, nội dung cần nhớ hoặc liên kết',
-              onTap: () {
-                Navigator.pop(context);
-                onAddNote();
-              },
-            ),
-            const SizedBox(height: 16),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildOption({
+  Widget _buildActionCard({
+    required BuildContext context,
     required IconData icon,
-    required Color iconColor,
-    required Color iconBgColor,
-    required String title,
-    required String subtitle,
+    required String label,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        decoration: BoxDecoration(
-          color: AppColors.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.divider.withOpacity(0.6)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: iconBgColor,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: iconColor, size: 22),
+    final isDark = context.isDarkMode;
+
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(26),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+          decoration: BoxDecoration(
+            color: isDark
+                ? const Color(0xFF2C2C2E).withValues(alpha: 0.65)
+                : const Color(0xFFFFFFFF).withValues(alpha: 0.75),
+            borderRadius: BorderRadius.circular(26),
+            border: Border.all(
+              color: isDark
+                  ? const Color(0xFF3A3A3C).withValues(alpha: 0.5)
+                  : const Color(0xFFE5E5EA).withValues(alpha: 0.8),
+              width: 0.8,
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.onSurfaceVariant,
-                    ),
-                  ),
-                ],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 3),
               ),
-            ),
-            const Icon(Icons.chevron_right_rounded, color: AppColors.outlineVariant, size: 20),
-          ],
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: context.textPrimary,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: context.surfaceCard, size: 22),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: context.textPrimary,
+                  letterSpacing: -0.2,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

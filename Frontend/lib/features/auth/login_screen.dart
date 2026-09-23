@@ -48,7 +48,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final authState = ref.watch(authProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.scaffoldBg,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -63,116 +63,155 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
+                          color: context.textPrimary.withValues(alpha: 0.15),
                           blurRadius: 16,
-                          offset: const Offset(0, 8),
+                          offset: const Offset(0, 6),
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.calendar_month, color: Colors.white, size: 36),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        'assets/images/logo.jpg',
+                        width: 72,
+                        height: 72,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: context.textPrimary,
+                          child: Icon(Icons.calendar_month_rounded, color: context.surfaceCard, size: 36),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
 
                 // App Title & Tagline
-                const Center(
+                Center(
                   child: Text(
-                    'MySche',
+                    'Huy',
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.onSurface,
+                      color: context.textPrimary,
                       letterSpacing: -0.5,
                     ),
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Center(
+                Center(
                   child: Text(
                     'Quản lý lịch trình & kế hoạch cá nhân',
-                    style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+                    style: TextStyle(fontSize: 14, color: context.textSecondary),
                   ),
                 ),
                 const SizedBox(height: 36),
 
                 // Form Card
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceCard,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.divider),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    color: context.surfaceCard,
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(color: context.borderDivider, width: 0.8),
+                    boxShadow: AppColors.cardShadow(context),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Email',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: context.textPrimary),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 8),
                       TextField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
-                        decoration: const InputDecoration(
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: context.textPrimary),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: context.containerLow,
                           hintText: 'name@example.com',
-                          prefixIcon: Icon(Icons.email_outlined, size: 20, color: AppColors.outline),
+                          hintStyle: TextStyle(color: context.textMuted, fontSize: 14),
+                          prefixIcon: Icon(Icons.email_outlined, size: 20, color: context.textMuted),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: context.textPrimary, width: 1.4),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      const Text(
+                      const SizedBox(height: 18),
+                      Text(
                         'Mật khẩu',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: context.textPrimary),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 8),
                       TextField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: context.textPrimary),
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: context.containerLow,
                           hintText: 'Nhập mật khẩu',
-                          prefixIcon: const Icon(Icons.lock_outline, size: 20, color: AppColors.outline),
+                          hintStyle: TextStyle(color: context.textMuted, fontSize: 14),
+                          prefixIcon: Icon(Icons.lock_outline, size: 20, color: context.textMuted),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                              _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                               size: 20,
-                              color: AppColors.outline,
+                              color: context.textMuted,
                             ),
                             onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                           ),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: context.textPrimary, width: 1.4),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
                       ),
                       const SizedBox(height: 24),
-                      ElevatedButton(
-                        onPressed: authState.status == AuthStatus.loading ? null : _handleLogin,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(48),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      Container(
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: context.textPrimary,
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: context.textPrimary.withValues(alpha: 0.22),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        child: authState.status == AuthStatus.loading
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                              )
-                            : const Text(
-                                'Đăng nhập',
-                                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
-                              ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: authState.status == AuthStatus.loading ? null : _handleLogin,
+                            borderRadius: BorderRadius.circular(14),
+                            child: Center(
+                              child: authState.status == AuthStatus.loading
+                                  ? SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(color: context.surfaceCard, strokeWidth: 2.2),
+                                    )
+                                  : Text(
+                                      'Đăng nhập',
+                                      style: TextStyle(color: context.surfaceCard, fontSize: 16, fontWeight: FontWeight.w700),
+                                    ),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -183,15 +222,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Chưa có tài khoản? ', style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant)),
+                    Text('Chưa có tài khoản? ', style: TextStyle(fontSize: 14, color: context.textSecondary)),
                     InkWell(
                       onTap: () => context.push('/register'),
-                      child: const Text(
+                      child: Text(
                         'Đăng ký ngay',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: context.textPrimary,
                         ),
                       ),
                     ),

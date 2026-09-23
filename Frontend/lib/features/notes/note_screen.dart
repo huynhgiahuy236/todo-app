@@ -27,16 +27,16 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
     final notes = noteState.notes;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(
         title: Row(
           children: [
-            const Text(
+            Text(
               'Ghi chú',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
-                color: AppColors.onSurface,
+                color: context.textPrimary,
                 letterSpacing: -0.3,
               ),
             ),
@@ -44,7 +44,7 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLow,
+                color: context.containerLow,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -70,11 +70,11 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
             child: TextField(
               controller: _searchController,
               onChanged: (val) => ref.read(noteProvider.notifier).setSearchQuery(val),
-              style: const TextStyle(fontSize: 14, color: AppColors.onSurface),
+              style: TextStyle(fontSize: 14, color: context.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Tìm kiếm tiêu đề, nội dung...',
-                hintStyle: const TextStyle(color: AppColors.outline, fontSize: 13),
-                prefixIcon: const Icon(Icons.search_rounded, color: AppColors.outline, size: 20),
+                hintStyle: TextStyle(color: context.textMuted, fontSize: 13),
+                prefixIcon: Icon(Icons.search_rounded, color: context.textMuted, size: 20),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear_rounded, size: 18),
@@ -85,14 +85,14 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
                       )
                     : null,
                 filled: true,
-                fillColor: AppColors.surfaceCard,
+                fillColor: context.surfaceCard,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: AppColors.divider.withOpacity(0.8)),
+                  borderSide: BorderSide(color: context.borderDivider),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: AppColors.divider.withOpacity(0.8)),
+                  borderSide: BorderSide(color: context.borderDivider),
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               ),
@@ -132,21 +132,21 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
                             Container(
                               width: 56,
                               height: 56,
-                              decoration: const BoxDecoration(
-                                color: AppColors.surfaceContainerLow,
+                              decoration: BoxDecoration(
+                                color: context.containerLow,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.edit_note_rounded, color: AppColors.outline, size: 28),
+                              child: Icon(Icons.edit_note_rounded, color: context.textMuted, size: 28),
                             ),
                             const SizedBox(height: 12),
-                            const Text(
+                            Text(
                               'Không có ghi chú nào',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.onSurfaceVariant),
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textSecondary),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
+                            Text(
                               'Bấm + để thêm ghi chú hoặc ý tưởng mới',
-                              style: TextStyle(fontSize: 12, color: AppColors.outline),
+                              style: TextStyle(fontSize: 12, color: context.textMuted),
                             ),
                           ],
                         ),
@@ -176,17 +176,17 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surfaceCard,
+          color: isSelected ? AppColors.primary : context.surfaceCard,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isSelected ? AppColors.primary : AppColors.divider.withOpacity(0.8)),
-          boxShadow: isSelected ? [BoxShadow(color: AppColors.primary.withOpacity(0.2), blurRadius: 4)] : null,
+          border: Border.all(color: isSelected ? AppColors.primary : context.borderDivider),
+          boxShadow: isSelected ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.2), blurRadius: 4)] : null,
         ),
         child: Text(
           label,
           style: TextStyle(
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-            color: isSelected ? Colors.white : AppColors.onSurfaceVariant,
+            color: isSelected ? Colors.white : context.textSecondary,
           ),
         ),
       ),
@@ -198,11 +198,11 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surfaceCard,
+        color: context.surfaceCard,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: AppColors.cardShadow,
+        boxShadow: AppColors.cardShadow(context),
         border: Border.all(
-          color: note.isPinned ? AppColors.primary.withOpacity(0.4) : AppColors.divider.withOpacity(0.6),
+          color: note.isPinned ? AppColors.primary.withValues(alpha: 0.5) : context.borderDivider,
           width: note.isPinned ? 1.2 : 0.8,
         ),
       ),
@@ -217,7 +217,7 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryFixed,
+                    color: AppColors.primary.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -236,7 +236,7 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppColors.warning.withOpacity(0.15),
+                    color: AppColors.warning.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -255,12 +255,12 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceContainerLow,
+                    color: context.containerLow,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Ý tưởng',
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.outline),
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: context.textMuted),
                   ),
                 ),
               Row(
@@ -273,7 +273,7 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
                       child: Icon(
                         note.isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
                         size: 18,
-                        color: note.isPinned ? AppColors.primary : AppColors.outline,
+                        color: note.isPinned ? AppColors.primary : context.textMuted,
                       ),
                     ),
                   ),
@@ -295,10 +295,10 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
           // Title
           Text(
             note.title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: AppColors.onSurface,
+              color: context.textPrimary,
               letterSpacing: -0.2,
             ),
           ),
@@ -306,7 +306,7 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
             const SizedBox(height: 6),
             Text(
               note.content,
-              style: const TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant, height: 1.4),
+              style: TextStyle(fontSize: 13, color: context.textSecondary, height: 1.4),
               maxLines: 4,
               overflow: TextOverflow.ellipsis,
             ),
@@ -317,7 +317,7 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
             children: [
               Text(
                 note.date,
-                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.outline),
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: context.textMuted),
               ),
             ],
           ),

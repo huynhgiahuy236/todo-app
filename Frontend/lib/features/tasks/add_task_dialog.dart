@@ -1,7 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/date_formatter.dart';
+import '../../core/services/notification_service.dart';
 import '../../providers/task_provider.dart';
 
 class AddTaskDialog extends ConsumerStatefulWidget {
@@ -59,224 +61,352 @@ class _AddTaskDialogState extends ConsumerState<AddTaskDialog> {
     final success = await ref.read(taskProvider.notifier).createTask(payload);
     if (mounted) {
       setState(() => _isSubmitting = false);
-      if (success) Navigator.pop(context);
+      if (success) {
+        if (_dueDate != null) {
+          final targetTime = _dueTime ?? const TimeOfDay(hour: 9, minute: 0);
+          final taskDateTime = DateTime(
+            _dueDate!.year,
+            _dueDate!.month,
+            _dueDate!.day,
+            targetTime.hour,
+            targetTime.minute,
+          );
+          if (taskDateTime.isAfter(DateTime.now())) {
+            NotificationService().scheduleNotification(
+              id: title.hashCode,
+              title: '🎯 Nhắc việc cần làm: $title',
+              body: 'Hạn chót: ${_dueTime != null ? '${_dueTime!.hour.toString().padLeft(2, '0')}:${_dueTime!.minute.toString().padLeft(2, '0')}' : '09:00'}',
+              scheduledDate: taskDateTime,
+            );
+          }
+        }
+        Navigator.pop(context);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceCard,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: EdgeInsets.only(
-        top: 12,
-        left: 20,
-        right: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-      ),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Drag Handle
-            Center(
-              child: Container(
-                width: 36,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.outlineVariant,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+    final isDark = context.isDarkMode;
+
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+        child: Container(
+          decoration: BoxDecoration(
+            color: isDark
+                ? const Color(0xFF1C1C1E).withValues(alpha: 0.85)
+                : const Color(0xFFF9F9FC).withValues(alpha: 0.88),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            border: Border(
+              top: BorderSide(
+                color: isDark
+                    ? const Color(0xFF38383A).withValues(alpha: 0.6)
+                    : const Color(0xFFE5E5EA).withValues(alpha: 0.8),
+                width: 0.8,
               ),
             ),
-            const SizedBox(height: 14),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.12),
+                blurRadius: 30,
+                offset: const Offset(0, -6),
+              ),
+            ],
+          ),
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 20,
+            right: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
-                  'Thêm việc cần làm',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.onSurface,
-                    letterSpacing: -0.3,
+                // iOS Drag Handle
+                Center(
+                  child: Container(
+                    width: 38,
+                    height: 4.5,
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF48484A) : const Color(0xFFC7C7CC),
+                      borderRadius: BorderRadius.circular(2.5),
+                    ),
                   ),
                 ),
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  borderRadius: BorderRadius.circular(16),
-                  child: const Padding(
-                    padding: EdgeInsets.all(4),
-                    child: Icon(Icons.close_rounded, color: AppColors.onSurfaceVariant, size: 22),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-            // Field 1: Title
-            const Text(
-              'TÊN CÔNG VIỆC',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: AppColors.outline,
-                letterSpacing: 0.8,
-              ),
-            ),
-            const SizedBox(height: 6),
-            TextField(
-              controller: _titleController,
-              autofocus: true,
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
-              decoration: InputDecoration(
-                hintText: 'Nhập tên công việc, bài tập...',
-                hintStyle: const TextStyle(color: AppColors.outline, fontWeight: FontWeight.normal),
-                filled: true,
-                fillColor: AppColors.surfaceContainerLow,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: AppColors.divider.withOpacity(0.8)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: AppColors.divider.withOpacity(0.8)),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              ),
-            ),
-            const SizedBox(height: 14),
-
-            // Field 2: Due Date & Priority
-            Row(
-              children: [
-                // Date picker chip
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'HẠN CHÓT',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.outline,
-                          letterSpacing: 0.8,
-                        ),
+                // Header Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Thêm việc cần làm',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: context.textPrimary,
+                        letterSpacing: -0.4,
                       ),
-                      const SizedBox(height: 6),
-                      InkWell(
-                        onTap: () async {
-                          final picked = await showDatePicker(
-                            context: context,
-                            initialDate: _dueDate ?? DateTime.now(),
-                            firstDate: DateTime(2020),
-                            lastDate: DateTime(2035),
-                          );
-                          if (picked != null) setState(() => _dueDate = picked);
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
-                          decoration: BoxDecoration(
-                            color: AppColors.surfaceContainerLow,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppColors.divider.withOpacity(0.8)),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.calendar_today_rounded, size: 16, color: AppColors.primary),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  _dueDate != null ? DateFormatter.formatDayMonth(_dueDate!) : 'Chọn ngày',
-                                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.onSurface),
-                                  overflow: TextOverflow.ellipsis,
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF2C2C2E).withValues(alpha: 0.8)
+                              : const Color(0xFFE5E5EA).withValues(alpha: 0.8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.close_rounded, color: context.textSecondary, size: 18),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Field 1: Title
+                _buildFieldLabel('TÊN CÔNG VIỆC', context),
+                const SizedBox(height: 7),
+                Container(
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF2C2C2E).withValues(alpha: 0.65)
+                        : const Color(0xFFEBEBF0).withValues(alpha: 0.7),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark
+                          ? const Color(0xFF3A3A3C).withValues(alpha: 0.5)
+                          : const Color(0xFFDCDCE0).withValues(alpha: 0.6),
+                      width: 0.8,
+                    ),
+                  ),
+                  child: TextField(
+                    controller: _titleController,
+                    autofocus: true,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: context.textPrimary,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Nhập tên việc cần làm, bài tập...',
+                      hintStyle: TextStyle(
+                        color: context.textMuted,
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Field 2: Due Date & Priority
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Date picker
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFieldLabel('HẠN CHÓT', context),
+                          const SizedBox(height: 7),
+                          InkWell(
+                            onTap: () async {
+                              final picked = await showDatePicker(
+                                context: context,
+                                initialDate: _dueDate ?? DateTime.now(),
+                                firstDate: DateTime(2020),
+                                lastDate: DateTime(2035),
+                              );
+                              if (picked != null) setState(() => _dueDate = picked);
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? const Color(0xFF2C2C2E).withValues(alpha: 0.65)
+                                    : const Color(0xFFEBEBF0).withValues(alpha: 0.7),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: isDark
+                                      ? const Color(0xFF3A3A3C).withValues(alpha: 0.5)
+                                      : const Color(0xFFDCDCE0).withValues(alpha: 0.6),
+                                  width: 0.8,
                                 ),
                               ),
-                            ],
+                              child: Row(
+                                children: [
+                                  Icon(Icons.calendar_month_rounded, size: 18, color: context.textPrimary),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      _dueDate != null ? DateFormatter.formatDayMonth(_dueDate!) : 'Chọn ngày',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: context.textPrimary,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+
+                    // Priority Selector
+                    Expanded(
+                      flex: 5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFieldLabel('MỨC ĐỘ ƯU TIÊN', context),
+                          const SizedBox(height: 7),
+                          Container(
+                            padding: const EdgeInsets.all(3.5),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? const Color(0xFF2C2C2E).withValues(alpha: 0.65)
+                                  : const Color(0xFFEBEBF0).withValues(alpha: 0.7),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: isDark
+                                    ? const Color(0xFF3A3A3C).withValues(alpha: 0.5)
+                                    : const Color(0xFFDCDCE0).withValues(alpha: 0.6),
+                                width: 0.8,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                _buildPriorityChip('low', 'Thấp', context),
+                                _buildPriorityChip('medium', 'Vừa', context),
+                                _buildPriorityChip('high', 'Cao', context),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // Submit Button
+                // Submit Button (iOS Squircle with Primary Accent)
+                Container(
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(width: 12),
-
-                // Priority selector
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'ƯU TIÊN',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.outline,
-                          letterSpacing: 0.8,
-                        ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _isSubmitting ? null : _handleSave,
+                      borderRadius: BorderRadius.circular(14),
+                      child: Center(
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.2,
+                                ),
+                              )
+                            : const Text(
+                                'Thêm công việc',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                  letterSpacing: -0.2,
+                                ),
+                              ),
                       ),
-                      const SizedBox(height: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceContainerLow,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppColors.divider.withOpacity(0.8)),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            value: _priority,
-                            isExpanded: true,
-                            dropdownColor: AppColors.surfaceCard,
-                            style: const TextStyle(color: AppColors.onSurface, fontWeight: FontWeight.w600, fontSize: 13),
-                            items: const [
-                              DropdownMenuItem(
-                                value: 'low',
-                                child: Text('Thấp', style: TextStyle(color: AppColors.onSurface, fontWeight: FontWeight.w600)),
-                              ),
-                              DropdownMenuItem(
-                                value: 'medium',
-                                child: Text('Vừa', style: TextStyle(color: AppColors.warning, fontWeight: FontWeight.w600)),
-                              ),
-                              DropdownMenuItem(
-                                value: 'high',
-                                child: Text('Cao', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600)),
-                              ),
-                            ],
-                            onChanged: (val) {
-                              if (val != null) setState(() => _priority = val);
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+          ),
+        ),
+      ),
+    );
+  }
 
-            // Submit Button
-            ElevatedButton(
-              onPressed: _isSubmitting ? null : _handleSave,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                elevation: 0,
+  Widget _buildPriorityChip(String id, String label, BuildContext context) {
+    final isSelected = _priority == id;
+    final isDark = context.isDarkMode;
+
+    return Expanded(
+      child: InkWell(
+        onTap: () => setState(() => _priority = id),
+        borderRadius: BorderRadius.circular(12),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? (isDark ? AppColors.primary.withValues(alpha: 0.3) : const Color(0xFFEFF6FF))
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            border: isSelected
+                ? Border.all(
+                    color: isDark ? AppColors.primary : const Color(0xFF3B82F6),
+                    width: 1.2,
+                  )
+                : null,
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 12.5,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                color: isSelected
+                    ? (isDark ? const Color(0xFF60A5FA) : const Color(0xFF2563EB))
+                    : (isDark ? Colors.white70 : Colors.black87),
               ),
-              child: _isSubmitting
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : const Text('Thêm công việc', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15)),
             ),
-          ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFieldLabel(String label, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 11.5,
+          fontWeight: FontWeight.w700,
+          color: context.textSecondary,
+          letterSpacing: 0.7,
         ),
       ),
     );

@@ -1,8 +1,6 @@
 class ApiEndpoints {
-  // Local development URL: 10.0.2.2 for Android Emulator, localhost for iOS/Web/Desktop
-  // Can be easily overridden via Environment variable or Settings
-  static const String defaultBaseUrl = 'http://10.0.2.2:5000/api';
-  static const String defaultLocalhostUrl = 'http://localhost:5000/api';
+  static const String defaultBaseUrl = 'https://todo-app-1-bcqv.onrender.com/api';
+  static const String defaultLocalhostUrl = 'https://todo-app-1-bcqv.onrender.com/api';
 
   // Auth
   static const String register = '/auth/register';

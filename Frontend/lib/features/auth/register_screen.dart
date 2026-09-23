@@ -58,11 +58,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final authState = ref.watch(authProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Tạo tài khoản',
-          style: TextStyle(fontWeight: FontWeight.w700),
+          style: TextStyle(fontWeight: FontWeight.w700, color: context.textPrimary),
         ),
       ),
       body: SafeArea(
@@ -72,109 +72,147 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
-                  'Bắt đầu với MySche',
+                Text(
+                  'Bắt đầu với Huy',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.onSurface,
+                    color: context.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
+                Text(
                   'Tạo tài khoản để đồng bộ lịch trình cá nhân của bạn',
-                  style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+                  style: TextStyle(fontSize: 14, color: context.textSecondary),
                 ),
                 const SizedBox(height: 24),
 
                 // Form Card
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceCard,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.divider),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    color: context.surfaceCard,
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(color: context.borderDivider, width: 0.8),
+                    boxShadow: AppColors.cardShadow(context),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Họ và tên',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: context.textPrimary),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 8),
                       TextField(
                         controller: _nameController,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
-                        decoration: const InputDecoration(
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: context.textPrimary),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: context.containerLow,
                           hintText: 'Nguyễn Văn A',
-                          prefixIcon: Icon(Icons.person_outline, size: 20, color: AppColors.outline),
+                          hintStyle: TextStyle(color: context.textMuted, fontSize: 14),
+                          prefixIcon: Icon(Icons.person_outline, size: 20, color: context.textMuted),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: context.textPrimary, width: 1.4),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      const Text(
+                      const SizedBox(height: 18),
+                      Text(
                         'Email',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: context.textPrimary),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 8),
                       TextField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
-                        decoration: const InputDecoration(
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: context.textPrimary),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: context.containerLow,
                           hintText: 'name@example.com',
-                          prefixIcon: Icon(Icons.email_outlined, size: 20, color: AppColors.outline),
+                          hintStyle: TextStyle(color: context.textMuted, fontSize: 14),
+                          prefixIcon: Icon(Icons.email_outlined, size: 20, color: context.textMuted),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: context.textPrimary, width: 1.4),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      const Text(
+                      const SizedBox(height: 18),
+                      Text(
                         'Mật khẩu',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: context.textPrimary),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 8),
                       TextField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.onSurface),
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: context.textPrimary),
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: context.containerLow,
                           hintText: 'Tối thiểu 6 ký tự',
-                          prefixIcon: const Icon(Icons.lock_outline, size: 20, color: AppColors.outline),
+                          hintStyle: TextStyle(color: context.textMuted, fontSize: 14),
+                          prefixIcon: Icon(Icons.lock_outline, size: 20, color: context.textMuted),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                              _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                               size: 20,
-                              color: AppColors.outline,
+                              color: context.textMuted,
                             ),
                             onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                           ),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: context.textPrimary, width: 1.4),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
                       ),
                       const SizedBox(height: 24),
-                      ElevatedButton(
-                        onPressed: authState.status == AuthStatus.loading ? null : _handleRegister,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(48),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      Container(
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: context.textPrimary,
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: context.textPrimary.withValues(alpha: 0.22),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        child: authState.status == AuthStatus.loading
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                              )
-                            : const Text(
-                                'Đăng ký',
-                                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
-                              ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: authState.status == AuthStatus.loading ? null : _handleRegister,
+                            borderRadius: BorderRadius.circular(14),
+                            child: Center(
+                              child: authState.status == AuthStatus.loading
+                                  ? SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(color: context.surfaceCard, strokeWidth: 2.2),
+                                    )
+                                  : Text(
+                                      'Đăng ký',
+                                      style: TextStyle(color: context.surfaceCard, fontSize: 16, fontWeight: FontWeight.w700),
+                                    ),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -185,15 +223,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Đã có tài khoản? ', style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant)),
+                    Text('Đã có tài khoản? ', style: TextStyle(fontSize: 14, color: context.textSecondary)),
                     InkWell(
                       onTap: () => context.pop(),
-                      child: const Text(
+                      child: Text(
                         'Đăng nhập',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: context.textPrimary,
                         ),
                       ),
                     ),

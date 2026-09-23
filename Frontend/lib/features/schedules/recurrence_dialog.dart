@@ -129,7 +129,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
               decoration: BoxDecoration(
                 color: AppColors.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+                border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,7 +223,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context, null),
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.divider.withOpacity(0.8)),
+                      side: BorderSide(color: AppColors.divider.withValues(alpha: 0.8)),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       padding: const EdgeInsets.symmetric(vertical: 13),
                     ),
@@ -274,10 +274,10 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
           color: isSelected ? AppColors.surfaceContainerLow : AppColors.surfaceCard,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.divider.withOpacity(0.8),
+            color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.8),
             width: isSelected ? 1.8 : 0.8,
           ),
-          boxShadow: isSelected ? [BoxShadow(color: AppColors.primary.withOpacity(0.08), blurRadius: 6)] : null,
+          boxShadow: isSelected ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.08), blurRadius: 6)] : null,
         ),
         child: Row(
           children: [

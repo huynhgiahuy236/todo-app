@@ -49,10 +49,23 @@ class DayViewWidget extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
+              FilledButton.icon(
                 onPressed: () => AddScheduleSheet.show(context, defaultDate: selectedDate),
-                icon: const Icon(Icons.add, size: 18),
-                label: const Text('Thêm lịch trình'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  elevation: 2,
+                  shadowColor: AppColors.primary.withValues(alpha: 0.3),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
+                ),
+                icon: const Icon(Icons.add_rounded, size: 19),
+                label: const Text(
+                  'Thêm lịch trình',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                ),
               ),
             ],
           ),

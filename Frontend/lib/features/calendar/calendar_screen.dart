@@ -44,27 +44,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final daySchedules = scheduleState.schedules.where((s) => s.startDate == selectedIso).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(
-        title: Row(
-          children: [
-            const Text(
-              'Lịch',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppColors.onSurface, letterSpacing: -0.3),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: AppColors.primaryFixed,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text(
-                'MySche',
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
-              ),
-            ),
-          ],
+        title: Text(
+          'Lịch',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: context.textPrimary,
+            letterSpacing: -0.3,
+          ),
         ),
         actions: [
           Container(
@@ -74,17 +63,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 ref.read(calendarProvider.notifier).goToToday();
                 _fetchCurrentRange();
               },
-              icon: const Icon(Icons.today_rounded, size: 16, color: AppColors.primary),
-              label: const Text(
+              icon: Icon(Icons.today_rounded, size: 16, color: context.textPrimary),
+              label: Text(
                 'Hôm nay',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: AppColors.primary),
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: context.textPrimary),
               ),
               style: TextButton.styleFrom(
-                backgroundColor: AppColors.surfaceCard,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(color: AppColors.divider.withOpacity(0.8)),
+                backgroundColor: context.surfaceCard,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                shape: StadiumBorder(
+                  side: BorderSide(color: context.borderDivider),
                 ),
               ),
             ),
@@ -96,11 +84,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           // 1. Segmented Control [ Ngày ] [ Tuần ] [ Tháng ]
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            padding: const EdgeInsets.all(3),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: AppColors.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+              color: context.containerLow,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(color: context.borderDivider),
             ),
             child: Row(
               children: [
@@ -108,16 +96,19 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   title: 'Ngày',
                   mode: CalendarViewMode.day,
                   currentMode: calState.viewMode,
+                  context: context,
                 ),
                 _buildSegmentButton(
                   title: 'Tuần',
                   mode: CalendarViewMode.week,
                   currentMode: calState.viewMode,
+                  context: context,
                 ),
                 _buildSegmentButton(
                   title: 'Tháng',
                   mode: CalendarViewMode.month,
                   currentMode: calState.viewMode,
+                  context: context,
                 ),
               ],
             ),
@@ -129,10 +120,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
-                color: AppColors.surfaceCard,
+                color: context.surfaceCard,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: AppColors.cardShadow,
-                border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+                boxShadow: AppColors.cardShadow(context),
+                border: Border.all(color: context.borderDivider),
               ),
               child: Column(
                 children: [
@@ -146,10 +137,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           const SizedBox(width: 8),
                           Text(
                             DateFormatter.formatMonthYear(selectedDate),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.onSurface,
+                              color: context.textPrimary,
                             ),
                           ),
                         ],
@@ -163,9 +154,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               ref.read(calendarProvider.notifier).selectDate(prevWeek);
                               _fetchCurrentRange();
                             },
-                            child: const Padding(
-                              padding: EdgeInsets.all(4),
-                              child: Icon(Icons.chevron_left_rounded, size: 22, color: AppColors.onSurfaceVariant),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Icon(Icons.chevron_left_rounded, size: 22, color: context.textSecondary),
                             ),
                           ),
                           const SizedBox(width: 4),
@@ -176,9 +167,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               ref.read(calendarProvider.notifier).selectDate(nextWeek);
                               _fetchCurrentRange();
                             },
-                            child: const Padding(
-                              padding: EdgeInsets.all(4),
-                              child: Icon(Icons.chevron_right_rounded, size: 22, color: AppColors.onSurfaceVariant),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Icon(Icons.chevron_right_rounded, size: 22, color: context.textSecondary),
                             ),
                           ),
                         ],
@@ -197,58 +188,69 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       final hasEvent = scheduleState.schedules.any((s) => s.startDate == dayIso);
 
                       return Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            ref.read(calendarProvider.notifier).selectDate(day);
-                            _fetchCurrentRange();
-                          },
-                          borderRadius: BorderRadius.circular(12),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 150),
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            decoration: BoxDecoration(
-                              color: isSelected ? AppColors.primary : Colors.transparent,
-                              borderRadius: BorderRadius.circular(12),
-                              border: (!isSelected && isToday)
-                                  ? Border.all(color: AppColors.primary.withOpacity(0.6), width: 1.2)
-                                  : null,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  DateFormatter.formatWeekdayHeader(day),
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    color: isSelected
-                                        ? Colors.white.withOpacity(0.85)
-                                        : (day.weekday == DateTime.sunday ? AppColors.error : AppColors.outline),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 2.5),
+                          child: InkWell(
+                            onTap: () {
+                              ref.read(calendarProvider.notifier).selectDate(day);
+                              _fetchCurrentRange();
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 180),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? (hasEvent ? const Color(0xFF10B981) : AppColors.primary)
+                                    : (isToday ? AppColors.primary.withValues(alpha: 0.12) : Colors.transparent),
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: isSelected
+                                    ? [
+                                        BoxShadow(
+                                          color: (hasEvent ? const Color(0xFF10B981) : AppColors.primary).withValues(alpha: 0.35),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ]
+                                    : null,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    DateFormatter.formatWeekdayHeader(day),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : (day.weekday == DateTime.sunday ? AppColors.error : context.textMuted),
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  '${day.day}',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                                    color: isSelected
-                                        ? Colors.white
-                                        : (day.weekday == DateTime.sunday ? AppColors.error : AppColors.onSurface),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    '${day.day}',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : (isToday ? AppColors.primary : (day.weekday == DateTime.sunday ? AppColors.error : context.textPrimary)),
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                Container(
-                                  width: 4,
-                                  height: 4,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: hasEvent
-                                        ? (isSelected ? Colors.white : AppColors.primary)
-                                        : Colors.transparent,
+                                  const SizedBox(height: 4),
+                                  Container(
+                                    width: 4,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: hasEvent
+                                          ? (isSelected ? Colors.white : (isToday ? AppColors.primary : const Color(0xFF10B981)))
+                                          : Colors.transparent,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -285,6 +287,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   Widget _buildSegmentButton({
+    required BuildContext context,
     required String title,
     required CalendarViewMode mode,
     required CalendarViewMode currentMode,
@@ -293,17 +296,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     return Expanded(
       child: InkWell(
         onTap: () => ref.read(calendarProvider.notifier).changeViewMode(mode),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(24),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.surfaceCard : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
+            color: isSelected ? context.surfaceCard : Colors.transparent,
+            borderRadius: BorderRadius.circular(24),
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: const Color(0xFF0F172A).withOpacity(0.06),
+                      color: const Color(0xFF0F172A).withValues(alpha: 0.06),
                       blurRadius: 4,
                       offset: const Offset(0, 1),
                     ),
@@ -316,7 +319,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppColors.primary : AppColors.onSurfaceVariant,
+                color: isSelected ? context.textPrimary : context.textSecondary,
               ),
             ),
           ),

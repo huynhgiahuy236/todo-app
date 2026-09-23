@@ -61,26 +61,26 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
     final completedTasks = filteredTasks.where((t) => t.completed).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'MYSCHE TASKS',
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
-                color: AppColors.outline,
+                color: context.textMuted,
                 letterSpacing: 0.8,
               ),
             ),
-            const Text(
+            Text(
               'Việc cần làm',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
-                color: AppColors.onSurface,
+                color: context.textPrimary,
                 letterSpacing: -0.3,
               ),
             ),
@@ -107,10 +107,10 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceCard,
+                  color: context.surfaceCard,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: AppColors.cardShadow,
-                  border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+                  boxShadow: AppColors.cardShadow(context),
+                  border: Border.all(color: context.borderDivider),
                 ),
                 child: Column(
                   children: [
@@ -123,7 +123,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                               width: 34,
                               height: 34,
                               decoration: BoxDecoration(
-                                color: AppColors.primaryFixed,
+                                color: AppColors.primary.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(Icons.task_alt_rounded, color: AppColors.primary, size: 20),
@@ -131,10 +131,10 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                             const SizedBox(width: 10),
                             Text(
                               '${taskState.totalCount} công việc',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.onSurface,
+                                color: context.textPrimary,
                               ),
                             ),
                           ],
@@ -142,7 +142,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceContainerLow,
+                            color: context.containerLow,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -162,7 +162,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                       child: LinearProgressIndicator(
                         value: taskState.completionProgress,
                         minHeight: 8,
-                        backgroundColor: AppColors.surfaceContainerLow,
+                        backgroundColor: context.containerLow,
                         color: AppColors.primary,
                       ),
                     ),
@@ -172,7 +172,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                       children: [
                         Text(
                           'Tiến độ: ${(taskState.completionProgress * 100).toInt()}%',
-                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.outline),
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: context.textMuted),
                         ),
                         Text(
                           taskState.totalCount > 0 && taskState.completedCount == taskState.totalCount
@@ -183,7 +183,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                             fontWeight: FontWeight.w600,
                             color: taskState.totalCount > 0 && taskState.completedCount == taskState.totalCount
                                 ? AppColors.success
-                                : AppColors.onSurfaceVariant,
+                                : context.textSecondary,
                           ),
                         ),
                       ],
@@ -212,12 +212,12 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
 
               // 3. Pending Tasks Section
               if (_filter != 'completed') ...[
-                const Text(
+                Text(
                   'CẦN THỰC HIỆN',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.outline,
+                    color: context.textMuted,
                     letterSpacing: 0.8,
                   ),
                 ),
@@ -227,15 +227,15 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 24),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceCard,
+                      color: context.surfaceCard,
                       borderRadius: BorderRadius.circular(16),
-                      boxShadow: AppColors.cardShadow,
-                      border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+                      boxShadow: AppColors.cardShadow(context),
+                      border: Border.all(color: context.borderDivider),
                     ),
                     child: Center(
                       child: Text(
                         allTasks.isEmpty ? 'Chưa có công việc nào' : 'Không có công việc chưa hoàn thành!',
-                        style: const TextStyle(fontSize: 13, color: AppColors.outline),
+                        style: TextStyle(fontSize: 13, color: context.textMuted),
                       ),
                     ),
                   )
@@ -248,19 +248,19 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    const Text(
+                    Text(
                       'ĐÃ HOÀN THÀNH',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.outline,
+                        color: context.textMuted,
                         letterSpacing: 0.8,
                       ),
                     ),
                     const SizedBox(width: 6),
                     Text(
                       '(${completedTasks.length})',
-                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.outline),
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: context.textMuted),
                     ),
                   ],
                 ),
@@ -277,26 +277,43 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
 
   Widget _buildFilterPill(String key, String label) {
     final isSelected = _filter == key;
+    final isDark = context.isDarkMode;
+
     return InkWell(
       onTap: () => setState(() => _filter = key),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(12),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surfaceCard,
-          borderRadius: BorderRadius.circular(20),
+          color: isSelected
+              ? (isDark ? AppColors.primary : const Color(0xFFEFF6FF))
+              : context.surfaceCard,
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.divider.withOpacity(0.8),
+            color: isSelected
+                ? (isDark ? AppColors.primary : const Color(0xFF3B82F6))
+                : context.borderDivider,
+            width: isSelected ? 1.2 : 0.8,
           ),
-          boxShadow: isSelected ? [BoxShadow(color: AppColors.primary.withOpacity(0.2), blurRadius: 4)] : null,
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.2),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Text(
           label,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 12.5,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-            color: isSelected ? Colors.white : AppColors.onSurfaceVariant,
+            color: isSelected
+                ? (isDark ? Colors.white : const Color(0xFF2563EB))
+                : context.textSecondary,
           ),
         ),
       ),
@@ -325,10 +342,10 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: AppColors.surfaceCard,
+          color: context.surfaceCard,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: AppColors.cardShadow,
-          border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+          boxShadow: AppColors.cardShadow(context),
+          border: Border.all(color: context.borderDivider),
         ),
         child: IntrinsicHeight(
           child: Row(
@@ -338,7 +355,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
               Container(
                 width: 4,
                 decoration: BoxDecoration(
-                  color: task.completed ? AppColors.outlineVariant.withOpacity(0.5) : priorityColor,
+                  color: task.completed ? context.borderDivider : priorityColor,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(16),
                     bottomLeft: Radius.circular(16),
@@ -361,7 +378,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                             shape: BoxShape.circle,
                             color: task.completed ? AppColors.primary : Colors.transparent,
                             border: Border.all(
-                              color: task.completed ? AppColors.primary : AppColors.outlineVariant,
+                              color: task.completed ? AppColors.primary : context.borderDivider,
                               width: 1.8,
                             ),
                           ),
@@ -382,18 +399,18 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 decoration: task.completed ? TextDecoration.lineThrough : null,
-                                color: task.completed ? AppColors.outline : AppColors.onSurface,
+                                color: task.completed ? context.textMuted : context.textPrimary,
                               ),
                             ),
                             if (task.dueDate != null) ...[
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  const Icon(Icons.schedule_rounded, size: 13, color: AppColors.outline),
+                                  Icon(Icons.schedule_rounded, size: 13, color: context.textMuted),
                                   const SizedBox(width: 4),
                                   Text(
                                     task.dueDate!,
-                                    style: const TextStyle(fontSize: 12, color: AppColors.outline),
+                                    style: TextStyle(fontSize: 12, color: context.textMuted),
                                   ),
                                 ],
                               ),
@@ -405,7 +422,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
-                          color: priorityColor.withOpacity(0.12),
+                          color: priorityColor.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(

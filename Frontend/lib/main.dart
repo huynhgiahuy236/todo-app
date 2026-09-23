@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/constants/app_theme.dart';
+import 'core/services/notification_service.dart';
 import 'providers/theme_provider.dart';
 import 'routes/app_router.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init();
   runApp(
     const ProviderScope(
       child: MyScheApp(),
@@ -23,7 +25,7 @@ class MyScheApp extends ConsumerWidget {
     final themeMode = ref.watch(themeProvider);
 
     return MaterialApp.router(
-      title: 'MySche',
+      title: 'Huy',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

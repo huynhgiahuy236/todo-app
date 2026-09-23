@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'api_endpoints.dart';
@@ -48,13 +47,7 @@ class ApiClient {
   }
 
   static String _determineInitialBaseUrl() {
-    if (kIsWeb) {
-      return ApiEndpoints.defaultLocalhostUrl;
-    }
-    if (Platform.isAndroid) {
-      return ApiEndpoints.defaultBaseUrl; // 10.0.2.2 for Android Emulator
-    }
-    return ApiEndpoints.defaultLocalhostUrl;
+    return ApiEndpoints.defaultBaseUrl;
   }
 
   Dio get dio => _dio;

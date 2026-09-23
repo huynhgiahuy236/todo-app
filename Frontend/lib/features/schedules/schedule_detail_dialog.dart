@@ -131,7 +131,7 @@ class ScheduleDetailDialog extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
-                    color: accentColor.withOpacity(0.12),
+                    color: accentColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -168,7 +168,7 @@ class ScheduleDetailDialog extends ConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.errorContainer.withOpacity(0.5),
+                          color: AppColors.errorContainer.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(Icons.delete_outline_rounded, color: AppColors.error, size: 20),
@@ -198,7 +198,7 @@ class ScheduleDetailDialog extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: AppColors.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+                border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
               ),
               child: Column(
                 children: [
@@ -248,7 +248,7 @@ class ScheduleDetailDialog extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: AppColors.surfaceCard,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+                  border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
                 ),
                 child: Row(
                   children: [
@@ -273,7 +273,7 @@ class ScheduleDetailDialog extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: AppColors.surfaceCard,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.divider.withOpacity(0.6)),
+                  border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
