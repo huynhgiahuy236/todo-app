@@ -14,6 +14,7 @@ class AddTaskDialog extends ConsumerStatefulWidget {
   static Future<void> show(BuildContext context, {DateTime? defaultDate}) {
     return showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => AddTaskDialog(defaultDate: defaultDate),

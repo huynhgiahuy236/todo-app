@@ -22,6 +22,8 @@ class QuickAddSheet extends StatelessWidget {
   }) {
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => QuickAddSheet(
         onAddSchedule: onAddSchedule,
