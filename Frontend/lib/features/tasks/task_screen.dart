@@ -267,7 +267,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                 const SizedBox(height: 8),
                 ...completedTasks.map((task) => _buildTaskItem(context, ref, task)),
               ],
-              const SizedBox(height: 40),
+              const SizedBox(height: 88),
             ],
           ),
         ),

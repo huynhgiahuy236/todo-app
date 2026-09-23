@@ -181,7 +181,7 @@ class MonthViewWidget extends StatelessWidget {
                   ),
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 88),
                   itemCount: daySchedules.length,
                   itemBuilder: (context, index) {
                     final schedule = daySchedules[index];

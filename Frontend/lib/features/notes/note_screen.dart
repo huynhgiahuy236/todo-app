@@ -153,7 +153,7 @@ class _NoteScreenState extends ConsumerState<NoteScreen> {
                       ),
                     )
                   : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      padding: const EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 88),
                       itemCount: notes.length,
                       itemBuilder: (context, index) {
                         final note = notes[index];

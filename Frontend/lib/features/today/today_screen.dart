@@ -429,7 +429,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                       ),
                     ),
                   ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 88),
               ],
             ),
           ),

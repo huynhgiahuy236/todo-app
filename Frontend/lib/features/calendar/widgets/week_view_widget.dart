@@ -20,7 +20,7 @@ class WeekViewWidget extends StatelessWidget {
     final weekDays = DateFormatter.getWeekDays(selectedDate);
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 88),
       itemCount: weekDays.length,
       itemBuilder: (context, index) {
         final day = weekDays[index];

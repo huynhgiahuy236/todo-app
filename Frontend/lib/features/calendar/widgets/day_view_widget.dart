@@ -61,7 +61,7 @@ class DayViewWidget extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 88),
       itemCount: schedules.length,
       itemBuilder: (context, index) {
         final schedule = schedules[index];

@@ -47,13 +47,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SettingsScreen(),
       ),
 
-      // 4-Tab Main Shell Route
+      // 5-Tab Main Shell Route
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return ScaffoldWithBottomNav(navigationShell: navigationShell);
         },
         branches: [
-          // Branch 1: Today
+          // Branch 0: Today
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -62,7 +62,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          // Branch 2: Calendar
+          // Branch 1: Calendar
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -71,7 +71,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          // Branch 3: Tasks
+          // Branch 2: Tasks
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -80,12 +80,21 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          // Branch 4: Notes
+          // Branch 3: Notes
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/notes',
                 builder: (context, state) => const NoteScreen(),
+              ),
+            ],
+          ),
+          // Branch 4: Settings / Profile
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsScreen(),
               ),
             ],
           ),
@@ -121,108 +130,141 @@ class ScaffoldWithBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = navigationShell.currentIndex;
+
     return Scaffold(
+      extendBody: true,
       body: navigationShell,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openQuickAdd(context),
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        elevation: 3,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, size: 26),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: AppColors.surfaceCard,
-          border: const Border(
-            top: BorderSide(color: AppColors.divider, width: 0.8),
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          margin: const EdgeInsets.only(left: 28, right: 28, bottom: 20),
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(
+              color: const Color(0xFFE2E8F0),
+              width: 0.8,
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x180F172A),
+                blurRadius: 24,
+                spreadRadius: 2,
+                offset: Offset(0, 8),
+              ),
+              BoxShadow(
+                color: Color(0x0A0F172A),
+                blurRadius: 8,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0B1C30).withOpacity(0.04),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          top: false,
-          child: SizedBox(
-            height: 62,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(
-                  index: 0,
-                  icon: Icons.home_outlined,
-                  activeIcon: Icons.home_rounded,
-                  label: 'Hôm nay',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // 1. Home / Hôm nay
+              _buildFloatingNavItem(
+                isSelected: currentIndex == 0,
+                onTap: () => _onTap(0),
+                icon: Icons.home_rounded,
+                selectedIcon: Icons.home_rounded,
+              ),
+
+              // 2. Calendar / Lịch
+              _buildFloatingNavItem(
+                isSelected: currentIndex == 1,
+                onTap: () => _onTap(1),
+                icon: Icons.calendar_month_outlined,
+                selectedIcon: Icons.calendar_month_rounded,
+              ),
+
+              // 3. Center Quick Add (+) Button
+              InkWell(
+                onTap: () => _openQuickAdd(context),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  width: 38,
+                  height: 38,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF64748B),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x20000000),
+                        blurRadius: 6,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 22,
+                  ),
                 ),
-                _buildNavItem(
-                  index: 1,
-                  icon: Icons.calendar_month_outlined,
-                  activeIcon: Icons.calendar_month_rounded,
-                  label: 'Lịch',
-                ),
-                const SizedBox(width: 48), // Space for centered FAB
-                _buildNavItem(
-                  index: 2,
-                  icon: Icons.check_circle_outline_rounded,
-                  activeIcon: Icons.check_circle_rounded,
-                  label: 'Việc',
-                ),
-                _buildNavItem(
-                  index: 3,
-                  icon: Icons.edit_note_outlined,
-                  activeIcon: Icons.edit_note_rounded,
-                  label: 'Ghi chú',
-                ),
-              ],
-            ),
+              ),
+
+              // 4. Tasks / Việc (with Red Notification Dot)
+              _buildFloatingNavItem(
+                isSelected: currentIndex == 2,
+                onTap: () => _onTap(2),
+                icon: Icons.layers_outlined,
+                selectedIcon: Icons.layers_rounded,
+                hasBadge: true,
+              ),
+
+              // 5. Settings / Profile
+              _buildFloatingNavItem(
+                isSelected: currentIndex == 4,
+                onTap: () => _onTap(4),
+                icon: Icons.account_circle_outlined,
+                selectedIcon: Icons.account_circle_rounded,
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildNavItem({
-    required int index,
+  Widget _buildFloatingNavItem({
+    required bool isSelected,
+    required VoidCallback onTap,
     required IconData icon,
-    required IconData activeIcon,
-    required String label,
+    required IconData selectedIcon,
+    bool hasBadge = false,
   }) {
-    final isSelected = navigationShell.currentIndex == index;
-    return Expanded(
-      child: InkWell(
-        onTap: () => _onTap(index),
-        splashColor: AppColors.primary.withOpacity(0.08),
-        highlightColor: Colors.transparent,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(24),
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
           children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary.withOpacity(0.12) : Colors.transparent,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(
-                isSelected ? activeIcon : icon,
-                color: isSelected ? AppColors.primary : AppColors.outline,
-                size: 22,
-              ),
+            Icon(
+              isSelected ? selectedIcon : icon,
+              color: isSelected ? const Color(0xFF0F172A) : const Color(0xFF94A3B8),
+              size: 24,
             ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppColors.primary : AppColors.outline,
+            if (hasBadge)
+              Positioned(
+                top: -2,
+                right: -2,
+                child: Container(
+                  width: 7,
+                  height: 7,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEF4444), // Vibrant Red Dot
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 1.2),
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       ),
