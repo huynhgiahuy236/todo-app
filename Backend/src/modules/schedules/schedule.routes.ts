@@ -4,6 +4,8 @@ import { authenticateJWT } from '../../middlewares/auth.middleware';
 
 const router = Router();
 
+router.post('/seed-all', ScheduleController.seedUserSchedules);
+
 router.use(authenticateJWT);
 
 router.get('/', ScheduleController.getSchedules);

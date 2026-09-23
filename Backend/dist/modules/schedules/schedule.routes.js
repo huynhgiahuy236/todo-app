@@ -5,6 +5,7 @@ const express_1 = require("express");
 const schedule_controller_1 = require("./schedule.controller");
 const auth_middleware_1 = require("../../middlewares/auth.middleware");
 const router = (0, express_1.Router)();
+router.post('/seed-all', schedule_controller_1.ScheduleController.seedUserSchedules);
 router.use(auth_middleware_1.authenticateJWT);
 router.get('/', schedule_controller_1.ScheduleController.getSchedules);
 router.post('/', schedule_controller_1.ScheduleController.createSchedule);
