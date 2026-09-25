@@ -29,7 +29,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng nhập đủ Email và Mật khẩu')),
+        const SnackBar(content: Text('Nhập Email và Mật khẩu')),
       );
       return;
     }
