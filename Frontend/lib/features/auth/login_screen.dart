@@ -105,7 +105,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 4),
                 Center(
                   child: Text(
-                    'Quản lý lịch trình & kế hoạch cá nhân',
                     style: TextStyle(fontSize: 14, color: context.textSecondary),
                   ),
                 ),
