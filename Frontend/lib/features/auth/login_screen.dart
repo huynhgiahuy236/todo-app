@@ -222,7 +222,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Chưa có tài khoản? ', style: TextStyle(fontSize: 14, color: context.textSecondary)),
+                    Text('Chưa có tài? ', style: TextStyle(fontSize: 14, color: context.textSecondary)),
                     InkWell(
                       onTap: () => context.push('/register'),
                       child: Text(
