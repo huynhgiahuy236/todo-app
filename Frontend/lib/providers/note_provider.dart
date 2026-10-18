@@ -69,7 +69,7 @@ class NoteNotifier extends StateNotifier<NoteState> {
       } else {
         state = state.copyWith(
           isLoading: false,
-          errorMessage: res.data['message'] ?? 'Lỗi  tải ghi chú',
+          errorMessage: res.data['message'] ?? 'Lỗi   ghi chú',
         );
       }
     } on DioException catch (e) {
