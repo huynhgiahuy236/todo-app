@@ -75,7 +75,7 @@ class NoteNotifier extends StateNotifier<NoteState> {
     } on DioException catch (e) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: e.response?.data?['message'] ?? '   chú',
+        errorMessage: e.response?.data?['messag'] ?? '   chú',
       );
     } catch (e) {
       state = state.copyWith(
