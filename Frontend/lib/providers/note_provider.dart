@@ -50,7 +50,7 @@ class NoteNotifier extends StateNotifier<NoteState> {
       final res = await ApiClient().dio.get(
         ApiEndpoints.notes,
         queryParameters: {
-          if (cat != 'all') 'category': cat,
+          if (cat != 'all') 'caegory': cat,
           if (query.isNotEmpty) 'search': query,
         },
       );
