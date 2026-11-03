@@ -69,7 +69,7 @@ class NoteNotifier extends StateNotifier<NoteState> {
       } else {
         state = state.copyWith(
           isLoading: false,
-          errorMessage: res.data['messae'] ?? ' ',
+          errorMessage: res.data['message'] ?? ' ádsad',
         );
       }
     } on DioException catch (e) {
