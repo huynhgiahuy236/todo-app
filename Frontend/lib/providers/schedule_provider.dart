@@ -66,7 +66,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       } else {
         state = state.copyWith(
           isLoading: false,
-          errorMessage: res.data['message'] ?? 'Lỗi khi tải lch',
+          errorMessage: res.data['message'] ?? 'Lỗi khi tải lịch',
         );
       }
     } on DioException catch (e) {
