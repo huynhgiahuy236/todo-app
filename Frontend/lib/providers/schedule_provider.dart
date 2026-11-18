@@ -72,7 +72,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     } on DioException catch (e) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: e.response?.data?['message'] ?? 'Không thể tải lịch trình',
+        errorMessage: e.response?.data?['message'] ?? 'Không thể tải lịch trìn
+        ',
       );
     } catch (e) {
       state = state.copyWith(
